@@ -23,10 +23,10 @@ export const recipeDifficulty: Record<string, string> = {
 const config = {
     database: {
         HOST: process.env.NODE_ENV === 'production' ? process.env.POSTGRES_HOST_PROD 
-            : process.env.POSTGRES_HOST_DEV         || 'honeybee_postgres',
+            : process.env.POSTGRES_HOST_DEV         || 'herbarium_database',
         PORT: process.env.POSTGRES_PORT             || '5432',
-        USER: process.env.POSTGRES_USER             || 'admin',
-        DB: process.env.POSTGRES_DB                 || 'honeybee',
+        USER: process.env.POSTGRES_USER             || 'herbarium',
+        DB: process.env.POSTGRES_DB                 || 'herbarium',
         PASSWORD: process.env.POSTGRES_PASSWORD
     },
     auth: {

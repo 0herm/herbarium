@@ -32,7 +32,7 @@ export default function ExportButton() {
             const link = document.createElement('a')
             link.href = fileUrl
             const date = new Date().toISOString().split('T')[0].replace(/-/g, '_')
-            link.download = `honeybee_backup_${date}.sql`
+            link.download = `herbarium_backup_${date}.sql`
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)

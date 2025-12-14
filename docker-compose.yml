@@ -1,6 +1,6 @@
 services:
-  honeybee:
-    container_name: honeybee
+  herbarium:
+    container_name: herbarium
     tmpfs:
       - /var/lib/varnish:rw,size=1g,exec
     build: .
@@ -11,18 +11,18 @@ services:
     env_file:
       - .env
 
-  postgres:
+  herbarium_database:
     image: postgres:18
-    container_name: honeybee_postgres
+    container_name: herbarium_database
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB:-herbarium}
+      POSTGRES_USER: ${POSTGRES_USER:-herbarium}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - herbarium_data:/var/lib/postgresql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - .env
 
 volumes:
-  postgres_data:
+  herbarium_data:

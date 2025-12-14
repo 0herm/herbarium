@@ -1,4 +1,4 @@
-# HoneyBee
+# Herbarium
 A self-hosted recipe website, where you can share your recipes. Ease of use with tools to edit and add recipes.
 
 **Build With**  
@@ -16,12 +16,12 @@ NextJS, TypeScript, React, Tailwind, PostgreSQL and better-auth.
 
 | Name                      | Notes                                                                                |
 |---------------------------|--------------------------------------------------------------------------------------|
-| POSTGRES_HOST_PROD        | Default to `honeybee_postgres`, the host for the postgres database for production    |
-| POSTGRES_HOST_DEV         | Default to `honeybee_postgres`, the host for the postgres database for development   |
+| POSTGRES_HOST_PROD        | Default to `herbarium_database`, the host for the postgres database for production    |
+| POSTGRES_HOST_DEV         | Default to `herbarium_database`, the host for the postgres database for development   |
 | POSTGRES_PORT             | Default to `5432`, the port for the postgres database                                |
-| POSTGRES_USER             | Default to `admin`, the username for the postgres database                           |
+| POSTGRES_USER             | Default to `herbarium`, the username for the postgres database                           |
 | POSTGRES_PASSWORD         | Password for the postgres database user                                              |
-| POSTGRES_DB               | Default to `honeybee`, the name for the postgres database                            |
+| POSTGRES_DB               | Default to `herbarium`, the name for the postgres database                            |
 
 | Name                      | Notes                                                                                |
 |---------------------------|--------------------------------------------------------------------------------------|
