@@ -15,18 +15,18 @@ export default async function Home() {
     const stats = await getStats()
 
     return (
-        <div className='w-full flex flex-col items-center gap-[5rem]'>
+        <div className='w-full flex flex-col items-center gap-20'>
             <div className='h-[calc(100vh-var(--h-navbar))] w-screen relative'>
-                <div className='absolute inset-0 bg-gradient-to-b not-dark:from-green-400/60 dark:from-green-900 blur-3xl brightness-50' />
-                <div className='w-full h-full relative flex md:flex-row flex-col gap-[3rem] md:gap-[5rem] lg:gap-[10rem] items-center pb-[10rem] pl-[2rem] md:pl-[4rem] lg:pl-[6rem] p-[2rem]'>
-                    <div className='flex flex-col gap-[1rem] justify-center md:justify-normal'>
+                <div className='absolute inset-0 bg-linear-to-b not-dark:from-green-400/60 dark:from-green-900 blur-3xl brightness-50' />
+                <div className='w-full h-full relative flex md:flex-row flex-col gap-12 md:gap-20 lg:gap-40 items-center pb-40 pl-8 md:pl-16 lg:pl-24 p-8'>
+                    <div className='flex flex-col gap-4 justify-center md:justify-normal'>
                         <h1 className='text-3xl md:text-5xl font-bold text-center md:text-left'>
                             {text.title}
                         </h1>
                         <p className='text-sm md:text-lg text-center md:text-left'>
                             {text.description}
                         </p>
-                        <div className='flex flex-col xs:flex-row gap-[1rem]'>
+                        <div className='flex flex-col xs:flex-row gap-4'>
                             <Link href='/recipes/' className='flex justify-center'>
                                 <Button className='cursor-pointer bg-green-600 hover:bg-green-500'>
                                     {text.exploreRecipes}
@@ -39,7 +39,7 @@ export default async function Home() {
                             </Link>
                         </div>
                     </div>
-                    <div className='relative w-full h-full max-h-[30rem] max-w-[30rem]'>
+                    <div className='relative w-full h-full max-h-120 max-w-120'>
                         <Image 
                             src='/images/heroSection.webp'
                             fill
@@ -93,9 +93,9 @@ export default async function Home() {
                         <div className='flex gap-6 overflow-x-auto pb-4 scroll'>
                             {typeof favoriteRecipes !== 'string' ? favoriteRecipes.map((recipe) => (
                                 <Link key={recipe.id} href={`/recipe/${recipe.id}`}>
-                                    <Card className='flex-shrink-0 w-50 sm:w-60 group bg-card border-border pt-0'>
+                                    <Card className='shrink-0 w-50 sm:w-60 group bg-card border-border pt-0'>
                                         <div className='relative overflow-hidden flex items-center justify-center bg-muted/30 rounded-md px-8 py-4 pt-10'>
-                                            <div className='aspect-[3/2] overflow-hidden w-full relative'>
+                                            <div className='aspect-3/2 overflow-hidden w-full relative'>
                                                 <LoadImage id={recipe.id} />
                                             </div>
                                         </div>

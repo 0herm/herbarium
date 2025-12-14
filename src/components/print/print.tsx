@@ -19,17 +19,17 @@ type OptionsProps = {
 
 function RecipeContent({ recipe, options }: { recipe: RecipeProps; options: OptionsProps }) {
     return (
-        <div className={`${options.font !== 'none' ? options.font : ''} pl-[5rem] pt-[2.5rem] pr-[2.5rem] leading-relaxed break-inside-avoid`}>
-            <h1 className='text-2xl font-bold mb-[0.5rem] capitalize'>{recipe.title}</h1>
+        <div className={`${options.font !== 'none' ? options.font : ''} pl-20 pt-10 pr-10 leading-relaxed break-inside-avoid`}>
+            <h1 className='text-2xl font-bold mb-2 capitalize'>{recipe.title}</h1>
             <p className='text-gray-600'>{recipeText.porsions}: {recipe.quantity}</p>
             <p className='text-gray-600'>{recipeText.totalTime}: {timeToString(recipe.duration, 'long')}</p>
-            <hr className='my-[1.25rem] border-t-[0.1rem] border-gray-300' />
+            <hr className='my-5 border-t-[0.1rem] border-gray-300' />
             <h2 className='text-base font-semibold'>{recipeText.ingredients}:</h2>
-            <div className={`flex ${options.listDirection === 'row' ? 'flex-row gap-[2rem]' : 'flex-col gap-[0.5rem]'}`}>
+            <div className={`flex ${options.listDirection === 'row' ? 'flex-row gap-8' : 'flex-col gap-2'}`}>
                 {recipe.ingredients.map((part, index) => (
                     <div key={index} className='break-inside-avoid'>
                         <h3 className='text-base font-semibold capitalize'>{part.title}</h3>
-                        <ul className={`${options.listStyle !== 'none' ? `${options.listStyle} pl-[1rem]` : ''}`}>
+                        <ul className={`${options.listStyle !== 'none' ? `${options.listStyle} pl-4` : ''}`}>
                             {part.ingredients.map((ingredient, idx) => (
                                 <li key={idx} className='text-base'>
                                     {ingredient.quantity} {ingredient.ingredient}
@@ -39,7 +39,7 @@ function RecipeContent({ recipe, options }: { recipe: RecipeProps; options: Opti
                     </div>
                 ))}
             </div>
-            <div className='mt-[1.25rem] break-inside-avoid'>
+            <div className='mt-5 break-inside-avoid'>
                 <p className='whitespace-pre-wrap'>{recipe.instructions}</p>
             </div>
         </div>
@@ -103,7 +103,7 @@ export default function PrintButton({ recipe }: { recipe: RecipeProps }) {
         <>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button className='cursor-pointer px-[1rem] py-[0.5rem] bg-green-700/70 text-white rounded-md hover:bg-green-900'>
+                    <Button className='cursor-pointer px-4 py-2 bg-green-700/70 text-white rounded-md hover:bg-green-900'>
                         {text.printButton}
                     </Button>
                 </DialogTrigger>
@@ -143,7 +143,7 @@ export default function PrintButton({ recipe }: { recipe: RecipeProps }) {
                     <DialogFooter>
                         <Button
                             onClick={reactToPrintFn}
-                            className='cursor-pointer px-[1rem] py-[0.5rem] bg-green-700/70 text-white rounded-md hover:bg-green-900'
+                            className='cursor-pointer px-4 py-2 bg-green-700/70 text-white rounded-md hover:bg-green-900'
                         >
                             {text.printSubmit}
                         </Button>

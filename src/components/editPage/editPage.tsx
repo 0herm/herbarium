@@ -74,7 +74,7 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
         <div className='relative w-full'>
             <Form {...form}>
                 <form className='space-y-8' action={handleSubmit} onSubmit={() => form.trigger()}>
-                    <div className='max-w-3xl mx-auto p-2 flex flex-col gap-[1rem]'>
+                    <div className='max-w-3xl mx-auto p-2 flex flex-col gap-4'>
 
                         <Button className='w-fit text-base cursor-pointer hover:bg-transparent dark:hover:bg-transparent' variant='ghost' size='icon' onClick={() => router.back()}>
                             <ArrowLeft />
@@ -116,7 +116,7 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
                             )}
                         />
 
-                        <div className='grid grid-cols-2 gap-[2rem]'>
+                        <div className='grid grid-cols-2 gap-8'>
                             <FormField
                                 control={form.control}
                                 name='category'
@@ -182,7 +182,7 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
                             />
                         </div>
 
-                        <div className='grid grid-cols-2 gap-[2rem]'>
+                        <div className='grid grid-cols-2 gap-8'>
                             <FormField
                                 control={form.control}
                                 name='quantity'
@@ -212,9 +212,9 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
                             />
                         </div>
 
-                        <div className='flex flex-col gap-[0.5rem]'>
+                        <div className='flex flex-col gap-2'>
                             <FormLabel>{text.ingredients}</FormLabel>
-                            <div className='w-full flex flex-col justify-center items-center bg-input/30 border border-input rounded-md p-[1rem]'>
+                            <div className='w-full flex flex-col justify-center items-center bg-input/30 border border-input rounded-md p-4'>
                                 <Image
                                     src={form.watch('image') instanceof File ? URL.createObjectURL(form.watch('image') as Blob) : typeof form.watch('image') === 'string' ? `data:image/png;base64,${form.watch('image')}` as string : '/images/fallback.svg'}
                                     width={300}

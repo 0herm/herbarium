@@ -18,7 +18,7 @@ export default function SearchForm() {
         <>
             <Form 
                 action='/recipes'
-                className={`md:block left-0 top-[var(--h-navbar)] absolute bg-background w-full px-[0.1rem] md:top-0 md:relative md:max-w-[200px] md:bg-transparent ${active ? '' : 'hidden'} ${hide && active ? '' : hide ? 'md:hidden' : ''}`}
+                className={`md:block left-0 top-(--h-navbar) absolute bg-background w-full px-[0.1rem] md:top-0 md:relative md:max-w-[200px] md:bg-transparent ${active ? '' : 'hidden'} ${hide && active ? '' : hide ? 'md:hidden' : ''}`}
                 onSubmit={(e) => {
                     e.preventDefault()
                     setActive(false)

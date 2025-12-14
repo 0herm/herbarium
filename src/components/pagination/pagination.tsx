@@ -29,7 +29,7 @@ export default function PageOverview({current,pages}:{current:number,pages:numbe
     }
 
     return(
-        <Pagination className='pt-[2rem]'>
+        <Pagination className='pt-8'>
             <PaginationContent>
                 <PaginationItem>
                     <PaginationLink className='w-fit gap-1 px-2.5 sm:pl-2.5 mr-2' href={pathname+'?'+trigger(current === 1 ? 1 : current-1)}>

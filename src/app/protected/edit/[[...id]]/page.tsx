@@ -55,13 +55,13 @@ export default async function Page({ params, searchParams }: { params: Promise<{
 
     return(
         <div className='flex flex-col w-full'>
-            <Button className='w-[4rem] mb-[2rem]' variant='outline' asChild>
+            <Button className='w-16 mb-8' variant='outline' asChild>
                 <Link href='/protected'>{text.back}</Link>
             </Button>
 
             <div className='w-full flex items-center flex-col'>
                 <RecipesInput search={search} />
-                <div className='pt-6 flex flex-col w-[10rem]'>
+                <div className='pt-6 flex flex-col w-40'>
                     {typeof recipes === 'object' && recipes.recipes.map((recipe) => (
                         <Button 
                             key={recipe.id}

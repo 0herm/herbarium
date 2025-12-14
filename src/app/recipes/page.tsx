@@ -28,15 +28,15 @@ export default async function Page({searchParams}: {searchParams: Promise<{ [key
     const data = await searchRecipes(search, limit, offset-1, false, { category, difficulty, duration })
 
     return (
-        <div className='container mx-auto px-[1rem] py-[2rem]'>
-            <div className='flex flex-col lg:flex-row gap-[1.5rem]'>
+        <div className='container mx-auto px-4 py-8'>
+            <div className='flex flex-col lg:flex-row gap-6'>
                 <aside className='w-full lg:w-[18rem] shrink-0'>
-                    <div className='sticky top-[5rem] bg-card rounded-xl border p-[1.25rem] shadow-sm'>
-                        <h1 className='text-xl font-semibold mb-[1rem] flex items-center gap-[0.5rem]'>
-                            <Filter className='size-[1.25rem] text-green-600/70' />
+                    <div className='sticky top-20 bg-card rounded-xl border p-5 shadow-sm'>
+                        <h1 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                            <Filter className='size-5 text-green-600/70' />
                             {text.filters}
                         </h1>
-                        <div className='space-y-[1rem]'>
+                        <div className='space-y-4'>
                             <Filters />
                         </div>
                     </div>
@@ -44,14 +44,14 @@ export default async function Page({searchParams}: {searchParams: Promise<{ [key
 
                 <div className='flex-1'>
                     {typeof data === 'string' ? (
-                        <div className='flex items-center justify-center h-[15rem] bg-muted/20 rounded-lg'>
+                        <div className='flex items-center justify-center h-60 bg-muted/20 rounded-lg'>
                             <p className='text-lg text-muted-foreground'>{text.noRecipes}</p>
                         </div>
                     ) : (
-                        <div className='space-y-[1.5rem]'>
+                        <div className='space-y-6'>
                             <h2 className='text-2xl font-semibold'>
                                 {search ? `Resultater for '${search}'` : 'Alle oppskrifter'}
-                                {data.totalItems > 0 && <span className='text-muted-foreground text-lg ml-[0.5rem]'>({data.totalItems})</span>}
+                                {data.totalItems > 0 && <span className='text-muted-foreground text-lg ml-2'>({data.totalItems})</span>}
                             </h2>
                             
                             <RecipeGrid recipes={data.recipes} />
@@ -68,14 +68,14 @@ export default async function Page({searchParams}: {searchParams: Promise<{ [key
 function RecipeGrid({recipes}: {recipes: RecipeProps[]}) {
     if (!recipes || recipes.length === 0) {
         return (
-            <div className='flex items-center justify-center h-[15rem] bg-muted/20 rounded-lg'>
+            <div className='flex items-center justify-center h-60 bg-muted/20 rounded-lg'>
                 <p className='text-lg text-muted-foreground'>{text.noRecipes}</p>
             </div>
         )
     }
 
     return (
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[1rem]'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
             {recipes.map((recipe) => (
                 <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
@@ -89,33 +89,33 @@ function RecipeCard({recipe}: {recipe: RecipeProps}) {
     
     return (
         <Link href={`../recipe/${recipe.id}`}>
-            <Card className='h-[17.5rem] w-full overflow-hidden transition-all hover:shadow-md'>
-                <div className='relative h-[10rem] w-full overflow-hidden flex items-center justify-center'>
-                    <LoadImage id={recipe.id} className='w-full h-auto max-h-[10rem] object-contain' />
+            <Card className='h-70 w-full overflow-hidden transition-all hover:shadow-md'>
+                <div className='relative h-40 w-full overflow-hidden flex items-center justify-center'>
+                    <LoadImage id={recipe.id} className='w-full h-auto max-h-40 object-contain' />
                     {isNew && (
-                        <div className='absolute top-[0.5rem] left-[0.5rem] bg-green-950/70 py-[0.25rem] px-[0.5rem] rounded-md flex items-center gap-[0.25rem]'>
-                            <BadgePlus className='h-[0.75rem] w-[0.75rem] text-green-400' />
+                        <div className='absolute top-2 left-2 bg-green-950/70 py-1 px-2 rounded-md flex items-center gap-1'>
+                            <BadgePlus className='h-3 w-3 text-green-400' />
                             <span className='text-xs font-medium text-green-400'>{text.new}</span>
                         </div>
                     )}
                 </div>
                 
-                <CardContent className='p-[0.75rem]'>
-                    <CardTitle className='text-base font-semibold mb-[0.5rem] line-clamp-1'>
+                <CardContent className='p-3'>
+                    <CardTitle className='text-base font-semibold mb-2 line-clamp-1'>
                         {recipe.title}
                     </CardTitle>
                     
-                    <CardDescription className='flex flex-wrap gap-[0.75rem] text-xs'>
+                    <CardDescription className='flex flex-wrap gap-3 text-xs'>
                         {recipe.category && (
-                            <div className='flex items-center gap-[0.25rem]'>
-                                <Shapes className='h-[0.75rem] w-[0.75rem]' />
+                            <div className='flex items-center gap-1'>
+                                <Shapes className='h-3 w-3' />
                                 <span className='capitalize'>{recipeTypes[recipe.category]}</span>
                             </div>
                         )}
                         
                         {recipe.duration > 0 && (
-                            <div className='flex items-center gap-[0.25rem]'>
-                                <Clock className='h-[0.75rem] w-[0.75rem]' />
+                            <div className='flex items-center gap-1'>
+                                <Clock className='h-3 w-3' />
                                 <span>
                                     {timeToString(recipe.duration)}
                                 </span>

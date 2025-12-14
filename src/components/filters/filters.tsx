@@ -50,16 +50,16 @@ export default function Filters() {
     }
 
     return (
-        <div className='flex flex-col gap-[1rem]'>
+        <div className='flex flex-col gap-4'>
             <div>
-                <h2 className='pb-[0.5rem]'>{text.search}</h2>
+                <h2 className='pb-2'>{text.search}</h2>
                 <div className='relative'>
                     <Input 
                         type='search'
                         name='q' 
                         placeholder={searchPlaceholder}
                         value={search}
-                        className='pr-[2.5rem]'
+                        className='pr-10'
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
@@ -74,12 +74,12 @@ export default function Filters() {
                         className='absolute right-0 top-0 h-full cursor-pointer'
                         onClick={() => handleFilterChange('q', search)}
                     >
-                        <Search className='h-[1rem] w-[1rem]' />
+                        <Search className='h-4 w-4' />
                     </Button>
                 </div>
             </div>
             <div>
-                <h2 className='pb-[0.5rem]'>{text.category}</h2>
+                <h2 className='pb-2'>{text.category}</h2>
                 {recipeTypes && Object.entries(recipeTypes).map(([category, label]) => (
                     <div key={category} className='flex items-center space-x-2 mb-2'>
                         <Checkbox
@@ -102,12 +102,12 @@ export default function Filters() {
             </div>
             <div>
                 <h2>{text.totalTime}</h2>
-                <div className='w-full flex flex-col gap-[0.5rem] space-x-2 mb-2'>
+                <div className='w-full flex flex-col gap-2 space-x-2 mb-2'>
                     <label className='text-sm'>
                         {(timeFilter) === maxTime ? 'Ingen grense' : `Maks: ${timeToString(timeFilter)}`}
                     </label>
                     <Slider
-                        className='w-full [&_[data-slot=slider-range]]:bg-green-700/70 cursor-pointer'
+                        className='w-full **:data-[slot=slider-range]:bg-green-700/70 cursor-pointer'
                         min={minTime}
                         max={maxTime}
                         step={stepTime}

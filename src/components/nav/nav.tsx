@@ -65,7 +65,7 @@ export default function NavBar() {
                 </NavigationMenuList>
             </NavigationMenu>
 
-            <div className='flex flex-row items-center py-1 px-3 gap-[0.5rem]'>
+            <div className='flex flex-row items-center py-1 px-3 gap-2'>
                 <SearchForm />
                 <ThemeToggle />
                 <Link href={'/login'}>
