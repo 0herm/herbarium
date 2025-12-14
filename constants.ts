@@ -10,8 +10,8 @@ export const recipeTypes: Record<string, string> = {
 export const recipeCategories: {name_en:string, name:string, icon:string}[] = [
     { name_en: 'dinner', name: recipeTypes.dinner, icon: '🍛' },
     { name_en: 'baking', name: recipeTypes.baking, icon: '🍞' },
-    { name_en: 'drink', name: recipeTypes.drink, icon: '🍪' },
-    { name_en: 'dessert', name: recipeTypes.dessert, icon: '🥤' }
+    { name_en: 'drink', name: recipeTypes.drink, icon: '🥤' },
+    { name_en: 'dessert', name: recipeTypes.dessert, icon: '🍪' }
 ]
 
 export const recipeDifficulty: Record<string, string> = {
