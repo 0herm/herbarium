@@ -30,17 +30,16 @@ export default function ThemeSwitch() {
     }
 
     return (
-        <div className='grid place-items-center justify-end'>
-            <label className='cursor-pointer '>
-                <input
-                    type='checkbox'
-                    checked={theme === 'light'}
-                    onChange={toggleTheme}
-                    className='sr-only '
-                />
-                {theme === 'light' ?
-                    <Sun /> : <Moon />}
-            </label>
-        </div>
+        <button 
+            onClick={toggleTheme}
+            className='flex items-center justify-center h-10 w-10 rounded-lg hover:bg-accent/60 transition-colors cursor-pointer'
+            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+        >
+            {theme === 'light' ? (
+                <Sun className='h-5 w-5 text-amber-500' />
+            ) : (
+                <Moon className='h-5 w-5 text-blue-400' />
+            )}
+        </button>
     )
 }

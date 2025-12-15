@@ -21,9 +21,18 @@ sub vcl_recv {
         ban("req.url ~ " + req.http.x-invalidate-pattern);
         return (synth(200,"Ban added"));
     }
-    if (req.url ~ "/protected/" || (req.method != "GET" && req.method != "HEAD")) {
+
+    if (req.url ~ "/protected" || req.url ~ "/login" || req.url ~ "/api/auth/") {
         return (pass);
     }
+    if (req.http.Cookie ~ "better-auth\.session_token") {
+        return (pass);
+    }
+
+    if (req.method != "GET" && req.method != "HEAD") {
+        return (pass);
+    }
+
     if (req.http.Cookie) {
         set req.http.X-Theme = regsub(req.http.Cookie, ".*theme=([^;]+);?.*", "\1");
     }

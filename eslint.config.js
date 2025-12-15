@@ -1,7 +1,7 @@
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import typescriptParser from '@typescript-eslint/parser'
-import stylisticJs from '@stylistic/eslint-plugin-js'
+import stylistic from '@stylistic/eslint-plugin'
 
 export default [
     eslint.configs.recommended,
@@ -11,7 +11,7 @@ export default [
     },
     {
         plugins: {
-            '@stylistic/js': stylisticJs,
+            '@stylistic': stylistic,
         },
         languageOptions: {
             sourceType: 'module',
@@ -23,15 +23,15 @@ export default [
             'no-var': 'error',
             'array-callback-return': 'error',
             'yoda': 'error',
-            '@stylistic/js/indent': [
+            '@stylistic/indent': [
                 'error',
                 4,
             ],
-            '@stylistic/js/quotes': [
+            '@stylistic/quotes': [
                 'error',
                 'single'
             ],
-            '@stylistic/js/semi': [
+            '@stylistic/semi': [
                 'error',
                 'never'
             ],

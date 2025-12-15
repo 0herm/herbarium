@@ -23,8 +23,10 @@ export const auth = betterAuth({
         database: DB
     }),
     emailAndPassword: { 
-        enabled: true, 
+        enabled: true,
+        requireEmailVerification: false,
     },
+    baseURL: AUTH_URL,
     trustedOrigins: [AUTH_URL],
     secret: config.auth.AUTH_SECRET,
     telemetry: { enabled: config.auth.AUTH_TELEMETRY },

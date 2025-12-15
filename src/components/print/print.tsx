@@ -103,11 +103,14 @@ export default function PrintButton({ recipe }: { recipe: RecipeProps }) {
         <>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button className='cursor-pointer px-4 py-2 bg-green-700/70 text-white rounded-md hover:bg-green-900'>
+                    <Button variant='outline' className='cursor-pointer gap-2'>
+                        <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z' />
+                        </svg>
                         {text.printButton}
                     </Button>
                 </DialogTrigger>
-                <DialogContent className='sm:max-w-[calc(100%-2rem)] sm:w-auto overflow-y-auto'> 
+                <DialogContent className='sm:max-w-md overflow-y-auto'> 
                     <DialogHeader>
                         <DialogTitle>{text.title}</DialogTitle>
                         <DialogDescription>{text.description}</DialogDescription>
@@ -115,7 +118,7 @@ export default function PrintButton({ recipe }: { recipe: RecipeProps }) {
                     <div className='flex flex-col gap-4 py-4'>
                         {Object.entries(availableOptions).map(([key, { name, items }]) => (
                             <div key={key} className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor={key} className='text-right'>
+                                <Label htmlFor={key} className='text-right text-sm'>
                                     {name}
                                 </Label>
                                 <div className='col-span-3'>
@@ -143,7 +146,7 @@ export default function PrintButton({ recipe }: { recipe: RecipeProps }) {
                     <DialogFooter>
                         <Button
                             onClick={reactToPrintFn}
-                            className='cursor-pointer px-4 py-2 bg-green-700/70 text-white rounded-md hover:bg-green-900'
+                            className='cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground'
                         >
                             {text.printSubmit}
                         </Button>

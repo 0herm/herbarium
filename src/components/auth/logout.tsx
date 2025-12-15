@@ -2,6 +2,7 @@
 import { signOut } from '@/utils/auth-client'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { LogOut } from 'lucide-react'
 import { auth as text } from '@text'
 
 export default function SignOutButton() {
@@ -19,8 +20,9 @@ export default function SignOutButton() {
                     }
                 }
             )}
-            className='w-full'
+            className='cursor-pointer w-full h-11 gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30'
         >
+            <LogOut className='h-4 w-4' />
             {text.logout}
         </Button>
     )

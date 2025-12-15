@@ -71,30 +71,30 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
     }, [state])
 
     return (
-        <div className='relative w-full'>
+        <div className='min-h-[calc(100vh-var(--h-navbar))] w-full bg-linear-to-b from-background to-muted/20'>
             <Form {...form}>
                 <form className='space-y-8' action={handleSubmit} onSubmit={() => form.trigger()}>
-                    <div className='max-w-3xl mx-auto p-2 flex flex-col gap-4'>
+                    <div className='max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-6'>
 
-                        <Button className='w-fit text-base cursor-pointer hover:bg-transparent dark:hover:bg-transparent' variant='ghost' size='icon' onClick={() => router.back()}>
-                            <ArrowLeft />
+                        <Button className='w-fit text-base cursor-pointer gap-2' variant='ghost' size='sm' onClick={() => router.back()}>
+                            <ArrowLeft className='h-4 w-4' />
                             {text.back}
                         </Button>
 
-                        <div className='w-full flex justify-between items-center'>
-                            <h1 className='text-2xl'>{isNew ? text.addRecipe : text.editRecipe}</h1>
+                        <div className='w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border'>
+                            <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>{isNew ? text.addRecipe : text.editRecipe}</h1>
                             <FormField
                                 control={form.control}
                                 name='published'
                                 render={({ field }) => (
-                                    <FormItem className='flex items-center'>
-                                        <FormLabel>{text.published}</FormLabel>
+                                    <FormItem className='flex items-center gap-3 bg-card rounded-lg px-4 py-2 border border-border'>
+                                        <FormLabel className='text-sm font-medium'>{text.published}</FormLabel>
                                         <FormControl>
                                             <Switch
                                                 name='published'
                                                 checked={field.value}
                                                 onCheckedChange={field.onChange}
-                                                className='cursor-pointer'
+                                                className='cursor-pointer data-[state=checked]:bg-primary'
                                             />
                                         </FormControl>
                                     </FormItem>

@@ -3,8 +3,9 @@ import PrintButton from '@/components/print/print'
 import { Separator } from '@/components/ui/separator'
 import { getRecipeById } from '@/utils/api'
 import { timeToString } from '@/utils/timeFormater'
-import { Clock, Gauge, Leaf, Users } from 'lucide-react'
+import { Clock, Gauge, Leaf, Users, ChevronRight, Calendar, RefreshCw, ChefHat } from 'lucide-react'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { recipe as text } from '@text'
 
 
@@ -18,77 +19,138 @@ export default async function RecipePage({ params }: { params: Promise<{ id?: st
     }
 
     return (
-        <div className='w-full flex justify-center'>
-            <div className='w-full max-w-260 sm:px-8'>
-                <h1 className='w-full text-center capitalize text-2xl font-semibold'>{recipe.title}</h1>
-                <div className='relative flex items-start w-full h-48 sm:h-56 mt-4 print:hidden'>
+        <div className='min-h-screen bg-linear-to-b from-background to-muted/10'>
+            <div className='max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
+                {/* Breadcrumb */}
+                <nav className='flex items-center gap-2 text-sm text-muted-foreground mb-6'>
+                    <Link href='/' className='hover:text-foreground transition-colors'>Hjem</Link>
+                    <ChevronRight className='h-4 w-4' />
+                    <Link href='/recipes' className='hover:text-foreground transition-colors'>Oppskrifter</Link>
+                    <ChevronRight className='h-4 w-4' />
+                    <span className='text-foreground font-medium capitalize truncate max-w-[200px]'>{recipe.title}</span>
+                </nav>
+
+                <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground capitalize text-center mb-8'>
+                    {recipe.title}
+                </h1>
+                
+                <div className='relative w-full aspect-video sm:aspect-21/9 rounded-2xl overflow-hidden bg-muted/30 mb-8 print:hidden shadow-lg'>
                     <LoadImage id={recipe.id} />
+                    <div className='absolute inset-0 bg-linear-to-t from-black/20 to-transparent' />
                 </div>
-                <div className='flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 pt-8 md:pt-12'>
-                    <div className='flex flex-row items-center gap-4 w-60 p-4 rounded-lg bg-green-950/10 border border-green-900/40'>
-                        <Clock className='size-8 stroke-green-600/70'/>
-                        <div className='flex flex-col'>
-                            <h1 className='text-sm text-green-400/70'>{text.totalTime}</h1>
-                            <span className='text-xl font-semibold'>
+                
+                {/* Info Cards */}
+                <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12'>
+                    <div className='flex items-center gap-4 p-5 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow'>
+                        <div className='p-3 rounded-xl bg-primary/10'>
+                            <Clock className='h-6 w-6 text-primary'/>
+                        </div>
+                        <div>
+                            <p className='text-sm text-muted-foreground'>{text.totalTime}</p>
+                            <p className='text-lg font-semibold text-foreground'>
                                 {timeToString(recipe.duration, 'long')}
-                            </span>
+                            </p>
                         </div>
                     </div>
-                    <div className='flex flex-row items-center gap-4 w-60 p-4 rounded-lg bg-green-950/10 border border-green-900/40'>
-                        <Gauge className='size-8 stroke-green-600/70'/>
-                        <div className='flex flex-col'>
-                            <h1 className='text-sm text-green-400/70'>{text.difficulty}</h1>
-                            <span className='text-xl font-semibold capitalize'>{recipe.difficulty}</span>
+                    <div className='flex items-center gap-4 p-5 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow'>
+                        <div className='p-3 rounded-xl bg-primary/10'>
+                            <Gauge className='h-6 w-6 text-primary'/>
+                        </div>
+                        <div>
+                            <p className='text-sm text-muted-foreground'>{text.difficulty}</p>
+                            <p className='text-lg font-semibold text-foreground capitalize'>{recipe.difficulty}</p>
                         </div>
                     </div>
-                    <div className='flex flex-row items-center gap-4 w-60 p-4 rounded-lg bg-green-950/10 border border-green-900/40'>
-                        <Users className='size-8 stroke-green-600/70'/>
-                        <div className='flex flex-col'>
-                            <h1 className='text-sm text-green-400/70'>{text.porsions}</h1>
-                            <span className='text-xl font-semibold'>{recipe.quantity}</span>
+                    <div className='flex items-center gap-4 p-5 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow'>
+                        <div className='p-3 rounded-xl bg-primary/10'>
+                            <Users className='h-6 w-6 text-primary'/>
+                        </div>
+                        <div>
+                            <p className='text-sm text-muted-foreground'>{text.porsions}</p>
+                            <p className='text-lg font-semibold text-foreground'>{recipe.quantity}</p>
                         </div>
                     </div>
                 </div>
-                <div className='w-full flex flex-col md:flex-row gap-20 justify-between pt-16'>
-                    <div className='w-full md:max-w-[20rem]'>
-                        <h2 className='text-xl font-semibold mb-4 flex items-center'>
-                            <Leaf className='size-5 text-green-600/70 mr-2' />
-                            {text.ingredients}
-                        </h2>
-                        <Separator className='mb-4 bg-green-900' />
-                        {recipe.ingredients.map((section, index) => (
-                            <div key={index} className='mt-4'>
-                                <h1 className='capitalize font-semibold'>{section.title ?`${section.title}:`:''}</h1>
-                                <ul className='list-disc list-inside marker:text-green-600/50'>
-                                    {section.ingredients.map((item, idx) => (
-                                        <li key={idx} className='diagonal-fractions'>
-                                            <span>{item.quantity} {item.ingredient}</span>
-                                        </li>
+                
+                <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12'>
+                    {/* Ingredients Sidebar */}
+                    <aside className='lg:col-span-1'>
+                        <div className='sticky top-24'>
+                            <div className='bg-card rounded-xl border border-border p-6 shadow-sm'>
+                                <div className='flex items-center gap-2 mb-6'>
+                                    <div className='p-2 rounded-lg bg-primary/10'>
+                                        <Leaf className='h-5 w-5 text-primary' />
+                                    </div>
+                                    <h2 className='text-xl font-semibold'>{text.ingredients}</h2>
+                                </div>
+                                
+                                <div className='space-y-6'>
+                                    {recipe.ingredients.map((section, index) => (
+                                        <div key={index}>
+                                            {section.title && (
+                                                <h3 className='font-semibold text-foreground mb-3 text-sm uppercase tracking-wide'>
+                                                    {section.title}
+                                                </h3>
+                                            )}
+                                            <ul className='space-y-2'>
+                                                {section.ingredients.map((item, idx) => (
+                                                    <li key={idx} className='flex items-start gap-3 text-sm'>
+                                                        <span className='w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0' />
+                                                        <span className='text-foreground diagonal-fractions'>
+                                                            <span className='font-medium'>{item.quantity}</span> {item.ingredient}
+                                                        </span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            {index < recipe.ingredients.length - 1 && (
+                                                <Separator className='mt-4' />
+                                            )}
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                    <div className='w-full'>
-                        <h2 className='text-xl font-semibold mb-4'>{text.instructions}</h2>
-                        <Separator className='mb-4 bg-green-900' />
-                        <p className='w-full leading-relaxed'>{recipe.instructions.join(' ')}</p>
-                    </div>
-                </div>
-                <div className='w-full flex flex-row justify-between items-center pt-12'>
-                    <div className='dark:text-white/70 text-black/70 text-sm'>
-                        <div className='grid grid-cols-2 gap-2 text-sm'>
-                            <span className='font-semibold'>{text.created}:</span>
-                            <span>{recipe.date_created.toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                            {recipe.date_created.getTime() !== recipe.date_updated.getTime() && (
-                                <>
-                                    <span className='font-semibold'>{text.updated}:</span>
-                                    <span>{recipe.date_updated.toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                                </>
-                            )}
+                        </div>
+                    </aside>
+                    
+                    {/* Instructions */}
+                    <div className='lg:col-span-2'>
+                        <div className='bg-card rounded-xl border border-border p-6 sm:p-8 shadow-sm'>
+                            <div className='flex items-center gap-2 mb-6'>
+                                <div className='p-2 rounded-lg bg-primary/10'>
+                                    <ChefHat className='h-5 w-5 text-primary' />
+                                </div>
+                                <h2 className='text-xl font-semibold'>{text.instructions}</h2>
+                            </div>
+                            
+                            <div className='prose prose-sm sm:prose-base dark:prose-invert max-w-none'>
+                                {recipe.instructions.map((instruction, index) => (
+                                    <div key={index} className='flex gap-4 mb-4'>
+                                        <span className='shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-sm'>
+                                            {index + 1}
+                                        </span>
+                                        <p className='text-foreground leading-relaxed pt-1'>{instruction}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        {/* Footer Info */}
+                        <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-8 pt-8 border-t border-border'>
+                            <div className='flex flex-wrap gap-4 text-sm text-muted-foreground'>
+                                <div className='flex items-center gap-2'>
+                                    <Calendar className='h-4 w-4' />
+                                    <span>{text.created}: {recipe.date_created.toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                                </div>
+                                {recipe.date_created.getTime() !== recipe.date_updated.getTime() && (
+                                    <div className='flex items-center gap-2'>
+                                        <RefreshCw className='h-4 w-4' />
+                                        <span>{text.updated}: {recipe.date_updated.toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                                    </div>
+                                )}
+                            </div>
+                            <PrintButton recipe={{...recipe, image: null}} />
                         </div>
                     </div>
-                    <PrintButton recipe={{...recipe, image: null}} />
                 </div>
             </div>
         </div>

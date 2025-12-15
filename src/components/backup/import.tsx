@@ -37,25 +37,28 @@ export default function ImportButton() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className='w-full cursor-pointer'>
+                <Button variant='outline' className='w-full h-11 cursor-pointer gap-2'>
+                    <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12' />
+                    </svg>
                     {text.import.title}
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className='sm:max-w-md'>
                 <DialogHeader>
                     <DialogTitle>{text.import.dialogTitle}</DialogTitle>
                     <DialogDescription>
                         {text.import.dialogDescription}
                     </DialogDescription>
                 </DialogHeader>
-                <DialogFooter>
+                <DialogFooter className='gap-2 sm:gap-0'>
                     <DialogClose asChild>
                         <Button variant='outline' className='cursor-pointer'>
                             {text.import.dialogCancel}
                         </Button>
                     </DialogClose>
                     <Form action={formAction}>
-                        <Button type='submit' className='cursor-pointer' disabled={isPending}>
+                        <Button type='submit' className='cursor-pointer bg-primary hover:bg-primary/90' disabled={isPending}>
                             {isPending ? `${text.import.dialogImporting}...` : text.import.dialogImport}
                         </Button>
                     </Form>
