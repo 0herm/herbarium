@@ -5,11 +5,23 @@ services:
       - /var/lib/varnish:rw,size=1g,exec
     build: .
     ports:
-      - "8080:8080"
+      - "3000:3030"
     environment:
       - NODE_ENV=production
     env_file:
       - .env
+
+  herbarium_api:
+      container_name: herbarium_api
+      build:
+          context: ./api
+          dockerfile: Dockerfile
+      ports:
+          - '8080:8080'
+      env_file:
+          - .env
+      depends_on:
+          - herbarium_database
 
   herbarium_database:
     image: postgres:18

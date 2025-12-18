@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack -p 8080",
+    "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start -p 8081",
+    "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "seed": "tsx src/utils/seed.ts"

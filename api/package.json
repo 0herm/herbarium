@@ -1,0 +1,32 @@
+{
+  "name": "herbarium_api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx --watch src/index.ts",
+    "start": "node src/index.ts"
+  },
+  "keywords": [],
+  "type": "module",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "dotenv": "^17.2.2",
+    "fastify": "^5.6.1",
+    "pg": "^8.16.3",
+    "tsx": "^4.20.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@types/pg": "^8.15.5",
+    "typescript": "^5.9.2"
+  },
+  "imports": {
+    "#utils/*": "./src/utils/*",
+    "#constants": "./src/constants.ts",
+    "#components/*": "./src/components/*",
+    "#db": "./src/db.ts",
+    "#/*": "./src/*"
+  }
+}
