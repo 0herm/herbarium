@@ -1,4 +1,4 @@
-import run from '@utils/db'
+import config from '@config'
 
 export async function GET( req: Request, { params }: { params: Promise<{ id: string }> } ) {
     const { id } = await params
@@ -6,12 +6,14 @@ export async function GET( req: Request, { params }: { params: Promise<{ id: str
         return Response.json({ error: 'Missing id' }, { status: 400 })
     }
     try {
-        const result = await run('SELECT image FROM recipes WHERE id = $1', [id])
-        if (!result.rows.length || !result.rows[0].image) {
-            return Response.json({ error: 'Image not found' }, { status: 404 })
+        const res = await fetch(`${config.url.API}/image/${id}`)
+        
+        if (!res.ok) {
+            if (res.status === 404) return Response.json({ error: 'Image not found' }, { status: 404 })
+            return Response.json({ error: 'Internal server error' }, { status: 500 })
         }
-        const imageBuffer = result.rows[0].image
-        return new Response(imageBuffer, {
+
+        return new Response(res.body, {
             status: 200,
             headers: {
                 'Content-Type': 'image/webp',

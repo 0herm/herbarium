@@ -20,7 +20,12 @@ export const recipeDifficulty: Record<string, string> = {
     'hard'   : text.difficulty.hard
 }
 
+const { env } = process
+
 const config = {
+    url: {
+        API: env.API_URL,
+    },
     database: {
         HOST: process.env.NODE_ENV === 'production' ? process.env.POSTGRES_HOST_PROD 
             : process.env.POSTGRES_HOST_DEV         || 'herbarium_database',

@@ -3,11 +3,12 @@ import dotenv from 'dotenv'
 dotenv.config({path: '../.env'})
 
 const requiredEnvironmentVariables = [
-    'DB',
-    'DB_USER',
-    'DB_HOST',
-    'DB_PASSWORD',
-    'DB_PORT'
+    'POSTGRES_DB',
+    'POSTGRES_USER',
+    'POSTGRES_HOST_PROD',
+    'POSTGRES_PASSWORD',
+    'BETTER_AUTH_SECRET',
+    'AUTH_URL'
 ]
 
 const missingVariables = requiredEnvironmentVariables.filter(
@@ -28,15 +29,17 @@ const env = Object.fromEntries(
 )
 
 const config = {
-    DB: env.DB,
-    DB_USER: env.DB_USER,
-    DB_HOST: env.DB_HOST,
-    DB_PASSWORD: env.DB_PASSWORD,
-    DB_PORT: Number(env.DB_PORT) || 5432,
+    DB: env.POSTGRES_DB,
+    DB_USER: env.POSTGRES_USER,
+    DB_HOST: env.POSTGRES_HOST_PROD,
+    DB_PASSWORD: env.POSTGRES_PASSWORD,
+    DB_PORT: Number(process.env.DB_PORT) || 5432,
     DB_MAX_CONN: 20,
     DB_IDLE_TIMEOUT_MS: 5000,
     DB_TIMEOUT_MS: 3000,
-    CACHE_TTL: 1000
+    CACHE_TTL: 1000,
+    AUTH_SECRET: env.BETTER_AUTH_SECRET,
+    AUTH_URL: env.AUTH_URL
 }
 
 export default config
