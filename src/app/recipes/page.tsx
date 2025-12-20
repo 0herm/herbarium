@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/card'
 import LoadImage from '@/components/img/img'
 import PageOverview from '@/components/pagination/pagination'
-import { BadgePlus, Clock, Filter, Shapes, ChevronRight, Search } from 'lucide-react'
+import { BadgePlus, Clock, Filter, Shapes, ChevronRight, Search, Star } from 'lucide-react'
 import { recipeTypes } from '@parent/constants'
 import Filters from '@/components/filters/filters'
 import { searchRecipes } from '@/utils/api'
@@ -23,10 +23,11 @@ export default async function Page({searchParams}: {searchParams: Promise<{ [key
     const category = typeof paramsSearch.category === 'string' ? paramsSearch.category : undefined
     const difficulty = typeof paramsSearch.difficulty === 'string' ? paramsSearch.difficulty : undefined
     const duration = typeof paramsSearch.duration === 'string' ? Number(paramsSearch.duration) : undefined
+    const favorite = paramsSearch.favorite === 'true' ? true : undefined
 
     const limit = 12
 
-    const data = await searchRecipes(search, limit, offset-1, false, { category, difficulty, duration })
+    const data = await searchRecipes(search, limit, offset-1, false, { category, difficulty, duration, favorite })
 
     return (
         <div className='min-h-screen bg-linear-to-b from-background via-background to-muted/20'>
@@ -131,6 +132,12 @@ function RecipeCard({recipe}: {recipe: RecipeProps}) {
                         <div className='absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/90 text-primary-foreground text-xs font-medium shadow-lg'>
                             <BadgePlus className='h-3 w-3' />
                             <span>{text.new}</span>
+                        </div>
+                    )}
+                    {recipe.favorite && (
+                        <div className='absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-500/90 text-yellow-50 text-xs font-medium shadow-lg'>
+                            <Star className='h-3 w-3 fill-current' />
+                            <span>Favoritt</span>
                         </div>
                     )}
                     <div className='absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />

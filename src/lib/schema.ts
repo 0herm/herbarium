@@ -9,6 +9,7 @@ export const formSchema = z.object({
     quantity: z.string().min(1, { message: text.required }),
     duration: z.string().min(1, { message: text.required }),
     published: z.boolean(),
+    favorite: z.boolean(),
     image: (z.instanceof(File).or(z.null())).or(z.string()),
     sections: z.array(
         z.object({
@@ -38,6 +39,7 @@ export const defaultSchemaData = {
     quantity:       '',
     duration:       '',
     published:      true,
+    favorite:       false,
     image:          null,
     sections:       [{ title: '', ingredients: [{ quantity: '', ingredient: '' }] }],
     instructions:   [''],

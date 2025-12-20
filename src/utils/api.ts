@@ -16,7 +16,7 @@ export async function dbWrapper(query: string, params: any[] = []) {
 
 // Varnish cache
 export async function banCachePattern(pattern: string) {
-    await fetch('http://localhost:8080', {
+    await fetch('http://localhost:3030', {
         method: 'BAN',
         headers: {
             'x-invalidate-pattern': pattern
@@ -42,13 +42,13 @@ export async function importData(tableName: string, data: Array<Record<string, s
 }
 
 export async function getRecipeById(id: number): Promise<RecipeProps | string> {
-    const query = 'SELECT id, title, date_created, date_updated, category, duration, difficulty, quantity, ingredients, instructions, published FROM recipes WHERE id = $1'
+    const query = 'SELECT id, title, date_created, date_updated, category, duration, difficulty, quantity, ingredients, instructions, published, favorite FROM recipes WHERE id = $1'
     const result = await dbWrapper(query, [id])
     return typeof result === 'string' ? 'Recipe not found' : result[0]
 }
 
 export async function getRecipes(limit: number = 10): Promise<RecipeProps[] | string> {
-    const query = 'SELECT id, title, date_created, date_updated, category, duration, difficulty, published FROM recipes WHERE published = true ORDER BY date_created DESC LIMIT $1'
+    const query = 'SELECT id, title, date_created, date_updated, category, duration, difficulty, published, favorite FROM recipes WHERE published = true ORDER BY date_created DESC LIMIT $1'
     const result = await dbWrapper(query, [limit])
     return typeof result === 'string' ? 'No recipes found' : result
 }
@@ -87,12 +87,15 @@ export async function searchRecipes(
     limit: number = 8,
     offset: number = 0,
     showUnpublished: boolean = false,
-    filters: { category?: string; difficulty?: string; duration?: number }
+    filters: { category?: string; difficulty?: string; duration?: number; favorite?: boolean }
 ): Promise<{ recipes: RecipeProps[]; totalItems: number } | string> {
     const filterKeys = Object.keys(filters).filter(key => filters[key as keyof typeof filters] !== undefined)
     const filterConditions = filterKeys.map((key, index) => {
         if (key === 'duration') {
             return ` AND ${key} <= $${index + 2}`
+        }
+        if (key === 'favorite') {
+            return ` AND ${key} = $${index + 2}`
         }
         return ` AND ${key} = $${index + 2}`
     })
@@ -100,7 +103,7 @@ export async function searchRecipes(
 
     const params = [`%${keyword}%`, ...filterKeys.map(key => filters[key as keyof typeof filters]), limit, offset*limit]
 
-    const query = `SELECT id, title, date_created, date_updated, category, duration, difficulty, published FROM recipes WHERE ${showUnpublished ? '' : 'published = true AND'} title LIKE $1${filtersQuery} ORDER BY date_created DESC LIMIT $${params.length - 1} OFFSET $${params.length}`
+    const query = `SELECT id, title, date_created, date_updated, category, duration, difficulty, published, favorite FROM recipes WHERE ${showUnpublished ? '' : 'published = true AND'} title LIKE $1${filtersQuery} ORDER BY date_created DESC LIMIT $${params.length - 1} OFFSET $${params.length}`
     const countQuery = `SELECT COUNT(id) FROM recipes WHERE ${showUnpublished ? '' : 'published = true AND'} title LIKE $1${filtersQuery}`
 
     const [result, countResult] = await Promise.all([
@@ -117,8 +120,8 @@ export async function searchRecipes(
 }
 
 export async function addRecipe(recipe: Omit<RecipeProps, 'date_created' | 'date_updated' | 'id'>): Promise<RecipeProps | string> {
-    const query = `INSERT INTO recipes (title, date_created, date_updated, category, duration, difficulty, quantity, ingredients, instructions, published, image) 
-                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`
+    const query = `INSERT INTO recipes (title, date_created, date_updated, category, duration, difficulty, quantity, ingredients, instructions, published, favorite, image) 
+                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`
 
     const date = new Date().toISOString()
 
@@ -133,6 +136,7 @@ export async function addRecipe(recipe: Omit<RecipeProps, 'date_created' | 'date
         JSON.stringify(recipe.ingredients),
         recipe.instructions,
         recipe.published,
+        recipe.favorite,
         recipe.image
     ]
     const result = await dbWrapper(query, params)
@@ -162,9 +166,10 @@ export async function updateRecipe(id: number, recipe: Omit<RecipeProps, 'date_c
             ingredients = $7, 
             instructions = $8, 
             published = $9,
-            image = COALESCE($10, image)
+            favorite = $10,
+            image = COALESCE($11, image)
         WHERE 
-            id = $11
+            id = $12
         RETURNING *
     `
 
@@ -178,6 +183,7 @@ export async function updateRecipe(id: number, recipe: Omit<RecipeProps, 'date_c
         JSON.stringify(recipe.ingredients),
         recipe.instructions,
         recipe.published,
+        recipe.favorite,
         recipe.image,
         id
     ]

@@ -38,6 +38,7 @@ export default async function Page({ params, searchParams }: { params: Promise<{
                 image:          recipe.image ? Buffer.from(recipe.image).toString('base64') : null,
                 sections:       recipe.ingredients,
                 instructions:   recipe.instructions,
+                favorite:       recipe.favorite
             }
 
             return (<EditPage isNew={false} values={values} id={Number(id)} />)

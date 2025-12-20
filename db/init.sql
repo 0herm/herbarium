@@ -10,6 +10,7 @@ CREATE TABLE recipes (
     ingredients JSONB,
     instructions TEXT[],
     published BOOLEAN DEFAULT TRUE,
+    favorite BOOLEAN DEFAULT FALSE,
     image BYTEA
 );
 

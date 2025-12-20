@@ -50,7 +50,7 @@ export default async function Home() {
                                         <ArrowRight className='ml-2 h-5 w-5' />
                                     </Button>
                                 </Link>
-                                <Link href='/'>
+                                <Link href='/recipes/?favorite=true'>
                                     <Button size='lg' variant='outline' className='cursor-pointer px-8 h-12 text-base font-medium border-2 hover:bg-accent'>
                                         {text.favoriteRecipes}
                                     </Button>

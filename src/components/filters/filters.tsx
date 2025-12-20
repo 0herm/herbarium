@@ -22,6 +22,7 @@ export default function Filters() {
     const selectedTypes = searchParams.getAll('category')
     const [timeFilter, setTimeFilter] = useState(Number(searchParams.get('duration')) || maxTime)
     const [search, setSearch] = useState(searchParams.get('q') || '')
+    const favoriteFilter = searchParams.get('favorite') === 'true'
 
     function handleFilterChangeGroup(paramName: string, value: string, selected: boolean) {
         const params = new URLSearchParams(searchParams.toString())
@@ -89,6 +90,16 @@ export default function Filters() {
                         />
                     ))}
                 </div>
+            </div>
+
+            <div>
+                <h2 className='text-sm font-medium text-foreground mb-3'>Favoritter</h2>
+                <Checkbox
+                    id='favorite'
+                    checked={favoriteFilter}
+                    onChange={(checked) => handleFilterChange('favorite', checked ? 'true' : 'false', !checked)}
+                    label='Vis kun favoritter'
+                />
             </div>
 
             <div>

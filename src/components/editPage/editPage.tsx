@@ -83,23 +83,42 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
 
                         <div className='w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border'>
                             <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>{isNew ? text.addRecipe : text.editRecipe}</h1>
-                            <FormField
-                                control={form.control}
-                                name='published'
-                                render={({ field }) => (
-                                    <FormItem className='flex items-center gap-3 bg-card rounded-lg px-4 py-2 border border-border'>
-                                        <FormLabel className='text-sm font-medium'>{text.published}</FormLabel>
-                                        <FormControl>
-                                            <Switch
-                                                name='published'
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                                className='cursor-pointer data-[state=checked]:bg-primary'
-                                            />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
+                            <div className='flex gap-4'>
+                                <FormField
+                                    control={form.control}
+                                    name='published'
+                                    render={({ field }) => (
+                                        <FormItem className='flex items-center gap-3 bg-card rounded-lg px-4 py-2 border border-border'>
+                                            <FormLabel className='text-sm font-medium'>{text.published}</FormLabel>
+                                            <FormControl>
+                                                <Switch
+                                                    name='published'
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                    className='cursor-pointer data-[state=checked]:bg-primary'
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name='favorite'
+                                    render={({ field }) => (
+                                        <FormItem className='flex items-center gap-3 bg-card rounded-lg px-4 py-2 border border-border'>
+                                            <FormLabel className='text-sm font-medium'>Favorite</FormLabel>
+                                            <FormControl>
+                                                <Switch
+                                                    name='favorite'
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                    className='cursor-pointer data-[state=checked]:bg-primary'
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                         </div>
 
                         <FormField

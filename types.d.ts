@@ -22,6 +22,7 @@ type RecipeProps = {
     ingredients: IngredientsProps[]
     instructions: string[]
     published: boolean
+    favorite: boolean
     image: Uint8Array | null
 }
 
