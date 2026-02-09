@@ -8,7 +8,8 @@ import getIndex from './handlers/index/getIndex.ts'
 import getFavicon from './handlers/favicon/getFavicon.ts'
 
 const fastify = Fastify({
-    logger: true
+    logger: true,
+    bodyLimit: 2 * 1024 * 1024 // 2MB limit
 })
 
 fastify.register(cors, {
