@@ -12,7 +12,7 @@ type ApiRequestProps = {
 
 async function apiRequest({ method, path, data, options = {} }: ApiRequestProps) {
     const Cookies = await cookies()
-    const token = Cookies.get('better-auth.session_token')?.value || ''
+    const token = Cookies.get('__Secure-better-auth.session_token')?.value || ''
 
     const headers: Record<string, string> = {
         Authorization: `Bearer ${token}`,

@@ -11,7 +11,7 @@ export default async function requireAuth(req: FastifyRequest, res: FastifyReply
         }
 
         const token = authHeader.split(' ')[1]
-        headers.append('cookie', `better-auth.session_token=${token}`)
+        headers.append('cookie', `__Secure-better-auth.session_token=${token}`)
 
         const session = await auth.api.getSession({
             headers
