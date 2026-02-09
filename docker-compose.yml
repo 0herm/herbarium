@@ -1,13 +1,10 @@
 services:
   herbarium:
     container_name: herbarium
-    tmpfs:
-      - /var/lib/varnish:rw,size=1g,exec
     build: .
+    restart: always
     ports:
       - "3000:3030"
-    environment:
-      - NODE_ENV=production
     env_file:
       - .env
 
@@ -16,6 +13,7 @@ services:
       build:
           context: ./api
           dockerfile: Dockerfile
+      restart: always
       ports:
           - '8080:8080'
       env_file:
@@ -26,6 +24,7 @@ services:
   herbarium_database:
     image: postgres:18
     container_name: herbarium_database
+    restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-herbarium}
       POSTGRES_USER: ${POSTGRES_USER:-herbarium}
