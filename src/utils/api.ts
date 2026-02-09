@@ -93,7 +93,7 @@ export async function searchRecipes(
     return result as { recipes: RecipeProps[]; totalItems: number }
 }
 
-export async function addRecipe(recipe: Omit<RecipeProps, 'date_created' | 'date_updated' | 'id'>): Promise<RecipeProps | string> {
+export async function addRecipe(recipe: RecipeCreate): Promise<RecipeProps | string> {
     const result = await postWrapper({
         path: '/recipes',
         data: recipe
@@ -103,7 +103,7 @@ export async function addRecipe(recipe: Omit<RecipeProps, 'date_created' | 'date
     return result as RecipeProps
 }
 
-export async function updateRecipe(id: number, recipe: Omit<RecipeProps, 'date_created' | 'date_updated' | 'id'>): Promise<RecipeProps | string> {
+export async function updateRecipe(id: number, recipe: RecipeCreate): Promise<RecipeProps | string> {
     const result = await putWrapper({
         path: `/recipes/${id}`,
         data: recipe

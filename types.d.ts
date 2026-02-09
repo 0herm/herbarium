@@ -26,6 +26,10 @@ type RecipeProps = {
     image: Uint8Array | null
 }
 
+type RecipeCreate = Omit<RecipeProps, 'id' | 'date_created' | 'date_updated' | 'image'> & {
+    image: string | null
+}
+
 type GetRecentAddition = {
     id: number
     title: string

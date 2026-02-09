@@ -40,12 +40,13 @@ export async function submitForm(prevState: FormState, formData: FormData): Prom
             instructions:   result.data.instructions,
             published:      result.data.published,
             favorite:       result.data.favorite,
-            image:          null as Buffer | null
+            image:          null as string | null
         }
 
         if (result.data.image instanceof Blob) {
             const arrayBuffer = await result.data.image.arrayBuffer()
-            queryBody.image = Buffer.from(new Uint8Array(arrayBuffer))
+            const buffer = Buffer.from(new Uint8Array(arrayBuffer))
+            queryBody.image = buffer.toString('base64')
         }
 
         const id = Number(formData.get('id'))

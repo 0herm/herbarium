@@ -5,6 +5,13 @@ export default async function updateRecipe(req: FastifyRequest, res: FastifyRepl
     const { id } = req.params as { id: number }
     const recipe = req.body as Omit<RecipeProps, 'date_created' | 'date_updated' | 'id'>
     
+    let imageBuffer: Buffer | null = null
+    if (recipe.image && typeof recipe.image === 'string' && recipe.image !== 'null') {
+        imageBuffer = Buffer.from(recipe.image, 'base64')
+    } else if (recipe.image instanceof Buffer) {
+        imageBuffer = recipe.image
+    }
+
     const query = `
         UPDATE recipes 
         SET 
@@ -45,7 +52,7 @@ export default async function updateRecipe(req: FastifyRequest, res: FastifyRepl
         recipe.instructions,
         recipe.published,
         recipe.favorite,
-        recipe.image,
+        imageBuffer,
         id
     ]
 
