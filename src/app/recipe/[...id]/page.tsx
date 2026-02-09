@@ -139,12 +139,12 @@ export default async function RecipePage({ params }: { params: Promise<{ id?: st
                             <div className='flex flex-wrap gap-4 text-sm text-muted-foreground'>
                                 <div className='flex items-center gap-2'>
                                     <Calendar className='h-4 w-4' />
-                                    <span>{text.created}: {recipe.date_created.toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                                    <span>{text.created}: {new Date(recipe.date_created).toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                                 </div>
-                                {recipe.date_created.getTime() !== recipe.date_updated.getTime() && (
+                                {new Date(recipe.date_created).getTime() !== new Date(recipe.date_updated).getTime() && (
                                     <div className='flex items-center gap-2'>
                                         <RefreshCw className='h-4 w-4' />
-                                        <span>{text.updated}: {recipe.date_updated.toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                                        <span>{text.updated}: {new Date(recipe.date_updated).toLocaleDateString('NO', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                                     </div>
                                 )}
                             </div>
