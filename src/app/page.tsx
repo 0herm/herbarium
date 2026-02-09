@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { recipeCategories } from '@parent/constants'
 import { Button } from '@/components/ui/button'
 import { getRecentAdditions, getStats } from '@/utils/api'
-import { homepage as text } from '@text'
+import { homepage as text, recipe as recipe_text } from '@text'
 import { Card, CardContent } from '../components/ui/card'
 import LoadImage from '../components/img/img'
 import { timeToString } from '../utils/timeFormater'
@@ -148,11 +148,11 @@ export default async function Home() {
                                         <div className='flex items-center gap-4 mt-3 text-sm text-muted-foreground'>
                                             <div className='flex items-center gap-1.5'>
                                                 <Clock className='h-4 w-4' />
-                                                <span>{timeToString(90)}</span>
+                                                <span>{timeToString(recipe.duration)}</span>
                                             </div>
                                             <div className='flex items-center gap-1.5'>
                                                 <Users className='h-4 w-4' />
-                                                <span>{3} porsjoner</span>
+                                                <span>{recipe.quantity} {recipe_text.porsions.toLowerCase()}</span>
                                             </div>
                                         </div>
                                     </CardContent>

@@ -35,6 +35,8 @@ type GetRecentAddition = {
     title: string
     date_created: string
     category: string
+    duration: number
+    quantity: string
 }
 
 type FormStateImport = {

@@ -3,7 +3,7 @@ import run from '#db'
 
 export default async function getRecent(req: FastifyRequest, res: FastifyReply) {
     const { limit = 4 } = req.query as { limit?: number }
-    const query = 'SELECT id, title, date_created, category FROM recipes WHERE published = true ORDER BY date_created DESC LIMIT $1'
+    const query = 'SELECT id, title, date_created, category, duration, quantity FROM recipes WHERE published = true ORDER BY date_created DESC LIMIT $1'
     
     try {
         const result = await run(query, [limit])
