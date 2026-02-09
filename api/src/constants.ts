@@ -7,7 +7,7 @@ const requiredEnvironmentVariables = [
     'POSTGRES_USER',
     'POSTGRES_HOST_PROD',
     'POSTGRES_PASSWORD',
-    'BETTER_AUTH_SECRET',
+    'AUTH_SECRET',
     'AUTH_URL'
 ]
 
@@ -38,7 +38,7 @@ const config = {
     DB_IDLE_TIMEOUT_MS: 5000,
     DB_TIMEOUT_MS: 3000,
     CACHE_TTL: 1000,
-    AUTH_SECRET: env.BETTER_AUTH_SECRET,
+    AUTH_SECRET: env.AUTH_SECRET,
     AUTH_URL: env.AUTH_URL
 }
 
