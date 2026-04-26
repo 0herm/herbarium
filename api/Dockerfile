@@ -1,11 +1,14 @@
-FROM node:alpine
+FROM oven/bun:alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN addgroup -S app && adduser -S app -G app
 
-RUN npm install
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
-COPY . .
+COPY --chown=app:app . .
 
-CMD ["npm", "start"]
+USER app
+
+CMD ["bun", "run", "start"]

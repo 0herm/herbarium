@@ -1,10 +1,11 @@
 services:
   herbarium:
     container_name: herbarium
-    build: .
+    build:
+      context: ./frontend
     restart: always
     ports:
-      - "3000:3030"
+      - "3000:3000"
     env_file:
       - .env
 
@@ -12,7 +13,6 @@ services:
       container_name: herbarium_api
       build:
           context: ./api
-          dockerfile: Dockerfile
       restart: always
       ports:
           - '8080:8080'
@@ -32,8 +32,6 @@ services:
     volumes:
       - herbarium_data:/var/lib/postgresql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    env_file:
-      - .env
 
 volumes:
   herbarium_data:
