@@ -1,44 +1,162 @@
 "use client"
 
 import * as React from "react"
-import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
+import { createPortal } from "react-dom"
 
 import { cn } from "@parent/frontend/src/lib/utils"
 import { buttonVariants } from "@parent/frontend/src/components/ui/button"
+import { Slot } from "@parent/frontend/src/components/ui/slot"
+
+type AlertDialogContextValue = {
+  open: boolean
+  setOpen: (open: boolean) => void
+  titleId: string
+  descriptionId: string
+}
+
+const AlertDialogContext =
+  React.createContext<AlertDialogContextValue | null>(null)
+
+function useAlertDialogContext(componentName: string) {
+  const context = React.useContext(AlertDialogContext)
+  if (!context) {
+    throw new Error(`${componentName} must be used within <AlertDialog>`)
+  }
+  return context
+}
+
+function composeEventHandlers<E>(
+  userHandler: ((event: E) => void) | undefined,
+  internalHandler: (event: E) => void
+) {
+  return (event: E) => {
+    userHandler?.(event)
+    const defaultPrevented =
+      (event as unknown as { defaultPrevented?: boolean }).defaultPrevented ??
+      false
+    if (!defaultPrevented) {
+      internalHandler(event)
+    }
+  }
+}
+
+type AlertDialogProps = {
+  children: React.ReactNode
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+}
 
 function AlertDialog({
-  ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
-  return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />
+  children,
+  open,
+  defaultOpen = false,
+  onOpenChange,
+}: AlertDialogProps) {
+  const isControlled = open !== undefined
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen)
+  const titleId = React.useId()
+  const descriptionId = React.useId()
+  const currentOpen = isControlled ? open : internalOpen
+
+  const setOpen = React.useCallback(
+    (nextOpen: boolean) => {
+      if (!isControlled) {
+        setInternalOpen(nextOpen)
+      }
+      onOpenChange?.(nextOpen)
+    },
+    [isControlled, onOpenChange]
+  )
+
+  React.useEffect(() => {
+    if (!currentOpen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener("keydown", handleEscape)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [currentOpen, setOpen])
+
+  return (
+    <AlertDialogContext.Provider
+      value={{
+        open: currentOpen,
+        setOpen,
+        titleId,
+        descriptionId,
+      }}
+    >
+      <div data-slot="alert-dialog">{children}</div>
+    </AlertDialogContext.Provider>
+  )
+}
+
+type AlertDialogTriggerProps = React.ComponentProps<"button"> & {
+  asChild?: boolean
 }
 
 function AlertDialogTrigger({
+  asChild = false,
+  onClick,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) {
+}: AlertDialogTriggerProps) {
+  const { setOpen } = useAlertDialogContext("AlertDialogTrigger")
+  const Comp = asChild ? Slot : "button"
+
   return (
-    <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
+    <Comp
+      data-slot="alert-dialog-trigger"
+      onClick={composeEventHandlers(onClick, () => setOpen(true))}
+      {...props}
+    />
   )
 }
 
 function AlertDialogPortal({
-  ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) {
-  return (
-    <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />
-  )
+  children,
+}: {
+  children?: React.ReactNode
+}) {
+  if (typeof document === "undefined") {
+    return null
+  }
+  return createPortal(children, document.body)
 }
 
 function AlertDialogOverlay({
   className,
+  onClick,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) {
+}: React.ComponentProps<"div">) {
+  const { open, setOpen } = useAlertDialogContext("AlertDialogOverlay")
+
+  if (!open) {
+    return null
+  }
+
   return (
-    <AlertDialogPrimitive.Overlay
+    <div
       data-slot="alert-dialog-overlay"
+      data-state="open"
       className={cn(
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
         className
       )}
+      onClick={composeEventHandlers(onClick, () => setOpen(false))}
       {...props}
     />
   )
@@ -46,19 +164,38 @@ function AlertDialogOverlay({
 
 function AlertDialogContent({
   className,
+  children,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Content>) {
+}: React.ComponentProps<"div">) {
+  const { open, titleId, descriptionId } = useAlertDialogContext(
+    "AlertDialogContent"
+  )
+
+  if (!open) {
+    return null
+  }
+
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
-      <AlertDialogPrimitive.Content
+      <div
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
         data-slot="alert-dialog-content"
+        data-state="open"
         className={cn(
           "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
           className
         )}
+        onClick={(event) => {
+          event.stopPropagation()
+        }}
         {...props}
-      />
+      >
+        {children}
+      </div>
     </AlertDialogPortal>
   )
 }
@@ -95,9 +232,12 @@ function AlertDialogFooter({
 function AlertDialogTitle({
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Title>) {
+}: React.ComponentProps<"h2">) {
+  const { titleId } = useAlertDialogContext("AlertDialogTitle")
+
   return (
-    <AlertDialogPrimitive.Title
+    <h2
+      id={titleId}
       data-slot="alert-dialog-title"
       className={cn("text-lg font-semibold", className)}
       {...props}
@@ -108,9 +248,12 @@ function AlertDialogTitle({
 function AlertDialogDescription({
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Description>) {
+}: React.ComponentProps<"p">) {
+  const { descriptionId } = useAlertDialogContext("AlertDialogDescription")
+
   return (
-    <AlertDialogPrimitive.Description
+    <p
+      id={descriptionId}
       data-slot="alert-dialog-description"
       className={cn("text-muted-foreground text-sm", className)}
       {...props}
@@ -120,11 +263,20 @@ function AlertDialogDescription({
 
 function AlertDialogAction({
   className,
+  onClick,
+  asChild = false,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Action>) {
+}: React.ComponentProps<"button"> & {
+  asChild?: boolean
+}) {
+  const { setOpen } = useAlertDialogContext("AlertDialogAction")
+  const Comp = asChild ? Slot : "button"
+
   return (
-    <AlertDialogPrimitive.Action
+    <Comp
+      data-slot="alert-dialog-action"
       className={cn(buttonVariants(), className)}
+      onClick={composeEventHandlers(onClick, () => setOpen(false))}
       {...props}
     />
   )
@@ -132,11 +284,20 @@ function AlertDialogAction({
 
 function AlertDialogCancel({
   className,
+  onClick,
+  asChild = false,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) {
+}: React.ComponentProps<"button"> & {
+  asChild?: boolean
+}) {
+  const { setOpen } = useAlertDialogContext("AlertDialogCancel")
+  const Comp = asChild ? Slot : "button"
+
   return (
-    <AlertDialogPrimitive.Cancel
+    <Comp
+      data-slot="alert-dialog-cancel"
       className={cn(buttonVariants({ variant: "outline" }), className)}
+      onClick={composeEventHandlers(onClick, () => setOpen(false))}
       {...props}
     />
   )
