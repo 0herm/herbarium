@@ -41,7 +41,7 @@ export default async function Page({ params, searchParams }: { params: Promise<{
                 favorite:       recipe.favorite
             }
 
-            return (<EditPage isNew={false} values={values} id={Number(id)} />)
+            return (<EditPage isNew={false} values={values} id={Number(recipeId)} />)
         }
         return (
             <div className='min-h-[calc(100vh-var(--h-navbar))] w-full bg-linear-to-b from-background to-muted/20'>

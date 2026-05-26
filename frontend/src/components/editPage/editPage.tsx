@@ -15,7 +15,6 @@ import { Plus, Minus } from 'lucide-react'
 import { submitForm } from '@parent/frontend/src/components/editPage/actions'
 import { useActionState, useEffect } from 'react'
 import { formSchema, FormState, formSchemaData, defaultSchemaData } from '@parent/frontend/src/lib/schema'
-import Image from 'next/image'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@parent/frontend/src/components/ui/alert-dialog'
 import { deleteRecipe } from '@parent/frontend/src/utils/api'
 import { Switch } from '@parent/frontend/src/components/ui/switch'
@@ -48,11 +47,13 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
             formData.set('image', 'null')
         }
         formData.set('instructions', JSON.stringify(form.getValues('instructions')))
+        if (form.getValues('published')) formData.set('published', 'on')
+        if (form.getValues('favorite')) formData.set('favorite', 'on')
         return formAction(formData)
     }
 
-    function handleDelete(id: number) {
-        const result = deleteRecipe(id)
+    async function handleDelete(id: number) {
+        const result = await deleteRecipe(id)
         if (typeof result === 'string') {
             toast.error(result || 'Error: Please try again later.')
         }else {
@@ -68,7 +69,7 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
         } else if (state.success === false) {
             toast.error(state.error || 'Error: Please try again later.')
         }
-    }, [state])
+    }, [state, isNew, router])
 
     return (
         <div className='min-h-[calc(100vh-var(--h-navbar))] w-full bg-linear-to-b from-background to-muted/20'>
@@ -232,10 +233,11 @@ export default function EditPage({ values, isNew, id }:{ values?: formSchemaData
                         </div>
 
                         <div className='flex flex-col gap-2'>
-                            <FormLabel>{text.ingredients}</FormLabel>
+                            <FormLabel>{text.image}</FormLabel>
                             <div className='w-full flex flex-col justify-center items-center bg-input/30 border border-input rounded-md p-4'>
-                                <Image
-                                    src={form.watch('image') instanceof File ? URL.createObjectURL(form.watch('image') as Blob) : typeof form.watch('image') === 'string' ? `data:image/png;base64,${form.watch('image')}` as string : '/images/fallback.svg'}
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={form.watch('image') instanceof File ? URL.createObjectURL(form.watch('image') as Blob) : typeof form.watch('image') === 'string' ? `data:image/jpeg;base64,${form.watch('image')}` : '/images/fallback.svg'}
                                     width={300}
                                     height={300}
                                     alt='Recipe image'
