@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { cn } from "@parent/frontend/src/lib/utils"
+import { cn } from "@utils/cn"
 
 type SeparatorProps = React.ComponentProps<"div"> & {
   orientation?: "horizontal" | "vertical"

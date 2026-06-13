@@ -1,6 +1,6 @@
 'use client'
 
-import { Leaf, User, Menu, X } from 'lucide-react'
+import { Leaf, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { recipeTypes } from '@parent/constants' 
@@ -86,15 +86,6 @@ export default function NavBar() {
                 <div className='flex flex-row items-center gap-1 sm:gap-2'>
                     <SearchForm />
                     <ThemeToggle />
-                    <Link 
-                        href='/login'
-                        className='flex items-center justify-center h-10 w-10 rounded-lg hover:bg-accent/60 transition-colors'
-                        aria-label='Login'
-                        prefetch={false}
-                    >
-                        <User className='h-5 w-5' />
-                    </Link>
-                    
                     <button
                         onClick={() => setIsOpen(true)}
                         className='flex sm:hidden items-center justify-center cursor-pointer bg-transparent hover:bg-accent/60 h-10 w-10 p-0 rounded-lg'

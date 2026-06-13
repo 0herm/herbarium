@@ -20,25 +20,6 @@ export const recipeDifficulty: Record<string, string> = {
     'hard'   : text.difficulty.hard
 }
 
-const { env } = process
-
-const config = {
-    url: {
-        API: env.API_URL,
-    },
-    database: {
-        HOST: process.env.NODE_ENV === 'production' ? process.env.POSTGRES_HOST_PROD 
-            : process.env.POSTGRES_HOST_DEV         || 'herbarium_database',
-        PORT: process.env.POSTGRES_PORT             || '5432',
-        USER: process.env.POSTGRES_USER             || 'herbarium',
-        DB: process.env.POSTGRES_DB                 || 'herbarium',
-        PASSWORD: process.env.POSTGRES_PASSWORD
-    },
-    auth: {
-        AUTH_URL: process.env.AUTH_URL || 'http://localhost:8080',
-        AUTH_SECRET: process.env.AUTH_SECRET,
-        AUTH_TELEMETRY: process.env.AUTH_TELEMETRY === 'true'
-    }
-}
+const config = {}
 
 export default config

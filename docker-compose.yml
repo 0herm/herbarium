@@ -9,29 +9,4 @@ services:
     env_file:
       - .env
 
-  herbarium_api:
-      container_name: herbarium_api
-      build:
-          context: ./api
-      restart: always
-      ports:
-          - '8080:8080'
-      env_file:
-          - .env
-      depends_on:
-          - herbarium_database
-
-  herbarium_database:
-    image: postgres:18
-    container_name: herbarium_database
-    restart: always
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-herbarium}
-      POSTGRES_USER: ${POSTGRES_USER:-herbarium}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - herbarium_data:/var/lib/postgresql
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-
-volumes:
-  herbarium_data:
+volumes: {}

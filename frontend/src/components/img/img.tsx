@@ -3,7 +3,7 @@
 import Image from 'next/image'
 
 type LoadImageProps = {
-    id: number
+    id: string
     className?: string
 }
 

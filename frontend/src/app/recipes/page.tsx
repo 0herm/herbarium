@@ -27,12 +27,11 @@ export default async function Page({searchParams}: {searchParams: Promise<{ [key
 
     const limit = 12
 
-    const data = await searchRecipes(search, limit, offset-1, false, { category, difficulty, duration, favorite })
+    const data = await searchRecipes(search, limit, offset-1, { category, difficulty, duration, favorite })
 
     return (
         <div className='min-h-screen bg-linear-to-b from-background via-background to-muted/20'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
-                {/* Header */}
                 <div className='mb-8'>
                     <nav className='flex items-center gap-2 text-sm text-muted-foreground mb-4'>
                         <Link href='/' className='hover:text-foreground transition-colors'>Hjem</Link>
@@ -50,12 +49,10 @@ export default async function Page({searchParams}: {searchParams: Promise<{ [key
                 </div>
 
                 <div className='flex flex-col lg:flex-row gap-8'>
-                    {/* Mobile Filter Toggle */}
                     <MobileFilterToggle>
                         <Filters />
                     </MobileFilterToggle>
 
-                    {/* Sidebar Filters - Desktop */}
                     <aside className='hidden lg:block w-72 shrink-0'>
                         <div className='sticky top-24'>
                             <Card className='bg-card/50 backdrop-blur-sm border-border/50 shadow-sm'>
@@ -72,7 +69,6 @@ export default async function Page({searchParams}: {searchParams: Promise<{ [key
                         </div>
                     </aside>
 
-                    {/* Main Content */}
                     <div className='flex-1 min-w-0'>
                         {typeof data === 'string' ? (
                             <EmptyState message={text.noRecipes} />

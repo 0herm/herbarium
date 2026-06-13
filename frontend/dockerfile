@@ -13,21 +13,23 @@ RUN bun run build
 FROM oven/bun:alpine
 WORKDIR /app
 
-RUN apk add --no-cache varnish \
-    && addgroup -S app && adduser -S app -G app
+RUN apk add --no-cache varnish git openssh-client \
+    && addgroup -S app && adduser -S app -G app \
+    && mkdir -p /herbarium-recipes && chown app:app /herbarium-recipes
 
 COPY --from=builder --chown=app:app /app/.next/standalone ./
 COPY --from=builder --chown=app:app /app/.next/static ./.next/static
 COPY --from=builder --chown=app:app /app/public ./public
 
 COPY default.vcl /etc/varnish/default.vcl
+COPY --chmod=755 entrypoint.sh ./entrypoint.sh
 
-RUN chown app:app /etc/varnish
-RUN chown app:app /var/lib/varnish
+RUN chown app:app /etc/varnish \
+    && chown app:app /var/lib/varnish
 USER app
 
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3001
 EXPOSE 3000
 
-CMD ["sh", "-c", "varnishd -a :3000 -f /etc/varnish/default.vcl -s malloc,1g & bun server.js"]
+CMD ["sh", "entrypoint.sh"]

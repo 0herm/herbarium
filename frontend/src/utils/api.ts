@@ -1,123 +1,88 @@
 'use server'
 
-import { getWrapper, postWrapper, putWrapper, deleteWrapper } from './apiWrapper'
+import { loadAllRecipes } from './cookParser'
 
-// Varnish cache
-export async function banCachePattern(pattern: string) {
-    await fetch('http://localhost:3030', {
-        method: 'BAN',
-        headers: {
-            'x-invalidate-pattern': pattern
-        }
-    })
-}
+const RECIPES_DIR = process.env.RECIPES_DIR || '/herbarium-recipes'
 
-export async function exportData(tableName: string): Promise<string> {
-    const result = await getWrapper({
-        path: `/backup/export?tableName=${tableName}`
-    })
-    return Array.isArray(result) ? JSON.stringify(result) : 'Error exporting data'
-}
-
-export async function importData(tableName: string, data: Array<Record<string, string | number | null>>): Promise<string> {
-    const result = await postWrapper({
-        path: '/backup/import',
-        data: { tableName, data }
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'Error importing data'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (result as any).message || 'Data imported successfully'
-}
-
-export async function getRecipeById(id: number): Promise<RecipeProps | string> {
-    const result = await getWrapper({
-        path: `/recipes/${id}`
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'Recipe not found'
-    return result as RecipeProps
+export async function getRecipeById(id: string): Promise<RecipeProps | string> {
+    try {
+        const all = await loadAllRecipes(RECIPES_DIR)
+        const recipe = all.find(r => r.id === id)
+        return recipe ?? 'Recipe not found'
+    } catch {
+        return 'Recipe not found'
+    }
 }
 
 export async function getRecipes(limit: number = 10): Promise<RecipeProps[] | string> {
-    const result = await getWrapper({
-        path: `/recipes?limit=${limit}`
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'No recipes found'
-    return result as RecipeProps[]
+    try {
+        const all = await loadAllRecipes(RECIPES_DIR)
+        return all
+            .filter(r => r.published)
+            .sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime())
+            .slice(0, limit)
+            .map(({ id, title, date_created, date_updated, category, duration, difficulty, published, favorite }) =>
+                ({ id, title, date_created, date_updated, category, duration, difficulty, published, favorite, quantity: '', ingredients: [], instructions: [] }))
+    } catch {
+        return 'No recipes found'
+    }
 }
 
 export async function getRecentAdditions(limit: number = 4): Promise<GetRecentAddition[] | string> {
-    const result = await getWrapper({
-        path: `/recipes/recent?limit=${limit}`
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'No recent additions found'
-    return result as GetRecentAddition[]
+    try {
+        const all = await loadAllRecipes(RECIPES_DIR)
+        return all
+            .filter(r => r.published)
+            .sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime())
+            .slice(0, limit)
+            .map(({ id, title, date_created, category, duration, quantity }) =>
+                ({ id, title, date_created, category, duration, quantity }))
+    } catch {
+        return 'No recent additions found'
+    }
 }
 
 export async function getStats(): Promise<{ totalRecipes: number, totalCategories: number, firstYear: number } | string> {
-    const result = await getWrapper({
-        path: '/recipes/stats'
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'Error fetching stats'
-    return result as { totalRecipes: number, totalCategories: number, firstYear: number }
+    try {
+        const all = await loadAllRecipes(RECIPES_DIR)
+        const published = all.filter(r => r.published)
+        const totalRecipes = published.length
+        const totalCategories = new Set(published.map(r => r.category).filter(Boolean)).size
+        const dates = published.map(r => new Date(r.date_created).getTime()).filter(n => !isNaN(n))
+        const firstYear = dates.length ? new Date(Math.min(...dates)).getFullYear() : 0
+        return { totalRecipes, totalCategories, firstYear }
+    } catch {
+        return 'Error fetching stats'
+    }
 }
 
 export async function searchRecipes(
     keyword: string,
     limit: number = 8,
     offset: number = 0,
-    showUnpublished: boolean = false,
     filters: { category?: string; difficulty?: string; duration?: number; favorite?: boolean }
 ): Promise<{ recipes: RecipeProps[]; totalItems: number } | string> {
-    const params = new URLSearchParams()
-    params.append('keyword', keyword)
-    params.append('limit', limit.toString())
-    params.append('offset', offset.toString())
-    params.append('showUnpublished', showUnpublished.toString())
-    
-    if (filters.category) params.append('category', filters.category)
-    if (filters.difficulty) params.append('difficulty', filters.difficulty)
-    if (filters.duration) params.append('duration', filters.duration.toString())
-    if (filters.favorite !== undefined) params.append('favorite', filters.favorite.toString())
+    try {
+        const all = await loadAllRecipes(RECIPES_DIR)
+        const kw = keyword.toLowerCase()
 
-    const result = await getWrapper({
-        path: `/recipes/search?${params.toString()}`
-    })
-    
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'No matching recipes found'
-    return result as { recipes: RecipeProps[]; totalItems: number }
-}
+        const filtered = all
+            .filter(r => r.published)
+            .filter(r => !kw || r.title.toLowerCase().includes(kw))
+            .filter(r => !filters.category || r.category === filters.category)
+            .filter(r => !filters.difficulty || r.difficulty === filters.difficulty)
+            .filter(r => filters.duration === undefined || r.duration <= filters.duration)
+            .filter(r => filters.favorite === undefined || r.favorite === filters.favorite)
+            .sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime())
 
-export async function addRecipe(recipe: RecipeCreate): Promise<RecipeProps | string> {
-    const result = await postWrapper({
-        path: '/recipes',
-        data: recipe
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'Failed to add recipe'
-    return result as RecipeProps
-}
+        const totalItems = filtered.length
+        const recipes = filtered
+            .slice(offset * limit, offset * limit + limit)
+            .map(({ id, title, date_created, date_updated, category, duration, difficulty, published, favorite }) =>
+                ({ id, title, date_created, date_updated, category, duration, difficulty, published, favorite, quantity: '', ingredients: [], instructions: [] }))
 
-export async function updateRecipe(id: number, recipe: RecipeCreate): Promise<RecipeProps | string> {
-    const result = await putWrapper({
-        path: `/recipes/${id}`,
-        data: recipe
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'Failed to edit recipe'
-    return result as RecipeProps
-}
-
-export async function deleteRecipe(id: number) {
-    const result = await deleteWrapper({
-        path: `/recipes/${id}`
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((result as any).error) return 'Failed to delete recipe'
-    return result
+        return { recipes, totalItems }
+    } catch {
+        return 'No matching recipes found'
+    }
 }

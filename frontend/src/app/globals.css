@@ -220,14 +220,12 @@
   }
 }
 
-/* Smooth transitions for theme changes */
 @layer base {
   html {
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
-/* Better focus states */
 @layer base {
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
@@ -235,14 +233,12 @@
   }
 }
 
-/* Card hover effects */
 @layer utilities {
   .card-hover {
     @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
 }
 
-/* Gradient backgrounds */
 @layer utilities {
   .gradient-brand {
     @apply bg-linear-to-br from-primary/10 via-background to-brand-muted;

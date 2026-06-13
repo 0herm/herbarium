@@ -23,7 +23,6 @@ export default function Custom404() {
                     Beklager, vi kunne ikke finne siden du leter etter. Den kan ha blitt flyttet eller slettet.
                 </p>
                 
-                {/* Actions */}
                 <div className='flex flex-col sm:flex-row gap-4 justify-center'>
                     <Link href='/'>
                         <Button size='lg' className='bg-primary hover:bg-primary/90 text-primary-foreground'>

@@ -52,12 +52,6 @@
       ],
       "@utils/*": [
         "./src/utils/*"
-      ],
-      "@lib/*": [
-        "./src/lib/*"
-      ],
-      "@db": [
-        "./src/utils/db.ts"
       ]
     }
   },

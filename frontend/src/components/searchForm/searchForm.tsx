@@ -27,7 +27,6 @@ export default function SearchForm() {
                 md:relative md:flex md:bg-transparent md:backdrop-blur-none md:p-0 md:py-0 md:inset-auto md:z-auto
                 ${hide && !active ? 'md:hidden' : ''}
             `}>
-                {/* Close button for mobile */}
                 {active && (
                     <button 
                         onClick={() => setActive(false)}
@@ -66,7 +65,6 @@ export default function SearchForm() {
                 </Form>
             </div>
             
-            {/* Mobile Search Toggle */}
             <button
                 onClick={() => setActive(!active)} 
                 className={`

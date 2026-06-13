@@ -8,8 +8,6 @@ import { Card, CardContent } from '../components/ui/card'
 import LoadImage from '../components/img/img'
 import { timeToString } from '../utils/timeFormater'
 import { Clock, Users, ChefHat, BookOpen, TrendingUp, ArrowRight, Sparkles } from 'lucide-react'
-// import LoadSVG from '../components/svg/svg'
-
 export default async function Home() {
     const favoriteRecipes = await getRecentAdditions(6)
     const stats = await getStats()
@@ -17,10 +15,8 @@ export default async function Home() {
     return (
         <div className='w-full flex flex-col'>
             
-            {/* Hero Section */}
             <section className='relative min-h-[calc(100vh-var(--h-navbar))] w-full overflow-hidden'>
                 
-                {/* Background Gradient */}
                 <div className='absolute inset-0 bg-linear-to-br from-primary/5 via-background to-accent/20 dark:from-primary/10 dark:via-background dark:to-accent/10' />
                 <div className='absolute top-20 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-60 dark:opacity-30' />
                 <div className='absolute bottom-20 left-0 w-80 h-80 bg-accent/30 rounded-full blur-3xl opacity-50 dark:opacity-20' />
@@ -28,7 +24,6 @@ export default async function Home() {
                 <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20'>
                     <div className='grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[calc(100vh-var(--h-navbar)-6rem)]'>
                         
-                        {/* Text Content */}
                         <div className='flex flex-col gap-6 text-center lg:text-left order-2 lg:order-1'>
                             <div className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium w-fit mx-auto lg:mx-0'>
                                 <Sparkles className='h-4 w-4' />
@@ -58,7 +53,6 @@ export default async function Home() {
                             </div>
                         </div>
                         
-                        {/* Hero Image */}
                         <div className='relative order-1 lg:order-2'>
                             <div className='relative w-full max-w-lg mx-auto'>
                                 <div className='absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 rounded-3xl blur-2xl' />
@@ -78,7 +72,6 @@ export default async function Home() {
                 </div>
             </section>
 
-            {/* Stats Section */}
             <section className='w-full py-16 sm:py-20 bg-card/50'>
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                     {typeof stats === 'string' ? (
@@ -113,7 +106,6 @@ export default async function Home() {
                 </div>
             </section>
 
-            {/* Recent Recipes Section */}
             <section className='w-full py-16 sm:py-24'>
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                     <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12'>
@@ -167,7 +159,6 @@ export default async function Home() {
                 </div>
             </section>
 
-            {/* Categories Section */}
             <section className='w-full py-16 sm:py-24 bg-muted/30'>
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                     <div className='text-center mb-12'>

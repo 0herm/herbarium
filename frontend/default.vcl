@@ -22,13 +22,6 @@ sub vcl_recv {
         return (synth(200,"Ban added"));
     }
 
-    if (req.url ~ "/protected" || req.url ~ "/login" || req.url ~ "/api/auth/") {
-        return (pass);
-    }
-    if (req.http.Cookie ~ "better-auth\.session_token") {
-        return (pass);
-    }
-
     if (req.method != "GET" && req.method != "HEAD") {
         return (pass);
     }
@@ -44,6 +37,11 @@ sub vcl_hash {
 }
 
 sub vcl_backend_response {
+    if (beresp.status >= 400) {
+        set beresp.ttl = 0s;
+        set beresp.uncacheable = true;
+        return (deliver);
+    }
     set beresp.ttl = 30d;
     set beresp.http.Cache-Control = "public, max-age=86400";
     return (deliver);

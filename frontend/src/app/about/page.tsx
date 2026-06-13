@@ -8,7 +8,6 @@ export default function About(){
     return (
         <div className='min-h-[calc(100vh-var(--h-navbar))] w-full bg-linear-to-b from-background via-background to-muted/20'>
             <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12'>
-                {/* Breadcrumb */}
                 <nav className='flex items-center gap-2 text-sm text-muted-foreground mb-6'>
                     <Link href='/' className='hover:text-foreground transition-colors'>Hjem</Link>
                     <ChevronRight className='h-4 w-4' />

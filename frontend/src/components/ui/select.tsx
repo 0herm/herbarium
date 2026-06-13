@@ -3,7 +3,7 @@
 import * as React from "react"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
-import { cn } from "@parent/frontend/src/lib/utils"
+import { cn } from "@utils/cn"
 type SelectContextValue = {
   open: boolean
   setOpen: (open: boolean) => void

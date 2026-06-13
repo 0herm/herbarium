@@ -4,7 +4,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 import { XIcon } from "lucide-react"
 
-import { cn } from "@parent/frontend/src/lib/utils"
+import { cn } from "@utils/cn"
 import { Slot } from "@parent/frontend/src/components/ui/slot"
 
 type DialogContextValue = {
