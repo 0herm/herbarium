@@ -1,5 +1,5 @@
 import { CooklangParser } from '@cooklang/cooklang'
-import type { Ingredient, Item, Section } from '@cooklang/cooklang'
+import type { Cookware, Ingredient, Item, Quantity, Section, Timer } from '@cooklang/cooklang'
 import { readFile, readdir } from 'fs/promises'
 import { join } from 'path'
 
@@ -9,28 +9,42 @@ function slugToTitle(slug: string): string {
     return slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 }
 
-function quantityString(ing: Ingredient): string {
-    if (!ing.quantity) return ''
-    const v = ing.quantity.value
+function renderQuantity(q: Quantity): string {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const inner = v.value as any
+    const inner = q.value.value as any
     let num: string
-    if (v.type === 'number') {
+    if (q.value.type === 'number') {
         num = String(inner.value ?? inner)
-    } else if (v.type === 'range') {
+    } else if (q.value.type === 'range') {
         num = `${inner.start?.value ?? inner.start}-${inner.end?.value ?? inner.end}`
     } else {
-        num = String(v.value)
+        num = String(q.value.value)
     }
-    return ing.quantity.unit ? `${num} ${ing.quantity.unit}` : num
+    return q.unit ? `${num} ${q.unit}` : num
 }
 
-function itemsToText(items: Item[], ingredients: Ingredient[]): string {
+function quantityString(ing: Ingredient): string {
+    return ing.quantity ? renderQuantity(ing.quantity) : ''
+}
+
+function itemsToText(items: Item[], ingredients: Ingredient[], timers: Timer[], cookware: Cookware[], inlineQuantities: Quantity[]): string {
     return items.map(item => {
         if (item.type === 'text') return item.value
         if (item.type === 'ingredient') {
             const ing = ingredients[item.index]
             return ing ? (ing.alias ?? ing.name) : ''
+        }
+        if (item.type === 'timer') {
+            const t = timers[item.index]
+            return t?.quantity ? renderQuantity(t.quantity) : ''
+        }
+        if (item.type === 'cookware') {
+            const cw = cookware[item.index]
+            return cw ? (cw.alias ?? cw.name) : ''
+        }
+        if (item.type === 'inlineQuantity') {
+            const q = inlineQuantities[item.index]
+            return q ? renderQuantity(q) : ''
         }
         return ''
     }).join('').trim()
@@ -60,14 +74,14 @@ function buildSections(sections: Section[], ingredients: Ingredient[]): Ingredie
     return result.length ? result : [{ title: '', ingredients: [] }]
 }
 
-function buildInstructions(sections: Section[], ingredients: Ingredient[]): InstructionSectionProps[] {
+function buildInstructions(sections: Section[], ingredients: Ingredient[], timers: Timer[], cookware: Cookware[], inlineQuantities: Quantity[]): InstructionSectionProps[] {
     return sections
         .map(section => {
             const steps = section.content.flatMap(c => {
                 if (c.type !== 'step') return []
                 const hasText = c.value.items.some(item => item.type === 'text' && item.value.trim().length > 0)
                 if (!hasText) return []
-                const text = itemsToText(c.value.items, ingredients)
+                const text = itemsToText(c.value.items, ingredients, timers, cookware, inlineQuantities)
                 return text ? [text] : []
             })
             return { title: section.name ?? '', steps }
@@ -107,7 +121,7 @@ export function parseCookFile(content: string, slug: string): RecipeProps {
         difficulty,
         quantity,
         ingredients: buildSections(recipe.sections, recipe.ingredients),
-        instructions: buildInstructions(recipe.sections, recipe.ingredients),
+        instructions: buildInstructions(recipe.sections, recipe.ingredients, recipe.timers, recipe.cookware, recipe.inlineQuantities),
         published: get('published') !== 'false',
         favorite: get('favorite') === 'true',
     }
