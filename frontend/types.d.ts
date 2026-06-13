@@ -10,6 +10,11 @@ type IngredientsProps = {
     ingredients: IngredientProps[]
 }
 
+type InstructionSectionProps = {
+    title: string
+    steps: string[]
+}
+
 type RecipeProps = {
     id: string
     title: string
@@ -20,7 +25,7 @@ type RecipeProps = {
     difficulty: string
     quantity: string
     ingredients: IngredientsProps[]
-    instructions: string[]
+    instructions: InstructionSectionProps[]
     published: boolean
     favorite: boolean
 }

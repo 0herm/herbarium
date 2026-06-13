@@ -60,16 +60,19 @@ function buildSections(sections: Section[], ingredients: Ingredient[]): Ingredie
     return result.length ? result : [{ title: '', ingredients: [] }]
 }
 
-function buildInstructions(sections: Section[], ingredients: Ingredient[]): string[] {
-    return sections.flatMap(section =>
-        section.content.flatMap(c => {
-            if (c.type !== 'step') return []
-            const hasText = c.value.items.some(item => item.type === 'text' && item.value.trim().length > 0)
-            if (!hasText) return []
-            const text = itemsToText(c.value.items, ingredients)
-            return text ? [text] : []
+function buildInstructions(sections: Section[], ingredients: Ingredient[]): InstructionSectionProps[] {
+    return sections
+        .map(section => {
+            const steps = section.content.flatMap(c => {
+                if (c.type !== 'step') return []
+                const hasText = c.value.items.some(item => item.type === 'text' && item.value.trim().length > 0)
+                if (!hasText) return []
+                const text = itemsToText(c.value.items, ingredients)
+                return text ? [text] : []
+            })
+            return { title: section.name ?? '', steps }
         })
-    )
+        .filter(s => s.steps.length > 0)
 }
 
 export function parseCookFile(content: string, slug: string): RecipeProps {

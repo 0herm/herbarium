@@ -86,7 +86,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id?: st
                                     {recipe.ingredients.map((section, index) => (
                                         <div key={index}>
                                             {section.title && (
-                                                <h3 className='font-semibold text-foreground mb-3 text-sm uppercase tracking-wide'>
+                                                <h3 className='font-semibold uppercase tracking-wide text-foreground mb-3 text-sm'>
                                                     {section.title}
                                                 </h3>
                                             )}
@@ -120,14 +120,29 @@ export default async function RecipePage({ params }: { params: Promise<{ id?: st
                             </div>
 
                             <div className='prose prose-sm sm:prose-base dark:prose-invert max-w-none'>
-                                {recipe.instructions.map((instruction, index) => (
-                                    <div key={index} className='flex gap-4 mb-4'>
-                                        <span className='shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-sm'>
-                                            {index + 1}
-                                        </span>
-                                        <p className='text-foreground leading-relaxed pt-1'>{instruction}</p>
-                                    </div>
-                                ))}
+                                {(() => {
+                                    let stepNum = 0
+                                    return recipe.instructions.map((section, sIdx) => (
+                                        <div key={sIdx} className={sIdx > 0 ? 'mt-6' : ''}>
+                                            {section.title && (
+                                                <h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3 not-prose'>
+                                                    {section.title}
+                                                </h3>
+                                            )}
+                                            {section.steps.map((step, idx) => {
+                                                stepNum++
+                                                return (
+                                                    <div key={idx} className='flex gap-4 mb-4'>
+                                                        <span className='shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center text-sm'>
+                                                            {stepNum}
+                                                        </span>
+                                                        <p className='text-foreground leading-relaxed pt-1'>{step}</p>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ))
+                                })()}
                             </div>
                         </div>
 

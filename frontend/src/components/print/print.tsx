@@ -30,7 +30,7 @@ function RecipeContent({ recipe }: { recipe: RecipeProps }) {
                     {recipe.ingredients.map((part, i) => (
                         <div key={i} style={{ marginBottom: '10px' }}>
                             {part.title && (
-                                <h3 style={{ fontSize: '11px', fontWeight: 600, textTransform: 'capitalize', margin: '0 0 3px 0', color: '#444' }}>
+                                <h3 style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 3px 0', color: '#444' }}>
                                     {part.title}
                                 </h3>
                             )}
@@ -50,13 +50,28 @@ function RecipeContent({ recipe }: { recipe: RecipeProps }) {
                     <h2 style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px 0' }}>
                         {recipeText.instructions}
                     </h2>
-                    <ol style={{ margin: 0, padding: '0 0 0 16px' }}>
-                        {recipe.instructions.map((step, i) => (
-                            <li key={i} style={{ fontSize: '11px', lineHeight: '1.65', marginBottom: '6px', color: '#222' }}>
-                                {step}
-                            </li>
-                        ))}
-                    </ol>
+                    {(() => {
+                        let stepNum = 0
+                        return recipe.instructions.map((section, sIdx) => (
+                            <div key={sIdx} style={{ marginBottom: sIdx < recipe.instructions.length - 1 ? '10px' : 0 }}>
+                                {section.title && (
+                                    <h3 style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 3px 0', color: '#444' }}>
+                                        {section.title}
+                                    </h3>
+                                )}
+                                <ol style={{ margin: 0, padding: '0 0 0 16px' }} start={stepNum + 1}>
+                                    {section.steps.map((step, i) => {
+                                        stepNum++
+                                        return (
+                                            <li key={i} style={{ fontSize: '11px', lineHeight: '1.65', marginBottom: '5px', color: '#222' }}>
+                                                {step}
+                                            </li>
+                                        )
+                                    })}
+                                </ol>
+                            </div>
+                        ))
+                    })()}
                 </div>
             </div>
         </div>
