@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Om meg | Herbivore{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-var(--h-navbar))] w-full bg-linear-to-b from-background via-background to-muted/20">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <nav class="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+      <a href="/" class="hover:text-foreground transition-colors">Hjem</a>
+      <svg class="h-4 w-4"><use href="#icon-chevron-right"/></svg>
+      <span class="text-foreground font-medium">Om meg</span>
+    </nav>
+
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center p-4 rounded-2xl bg-primary/10 mb-6">
+        <svg class="h-12 w-12 text-primary"><use href="#icon-leaf"/></svg>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold text-foreground mb-4">Under konstruksjon</h1>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Min personlige digitale kokebok for å samle, organisere og dele mine favorittoppskrifter.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+      <div class="text-center border border-border/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-xl bg-card p-8">
+        <div class="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
+          <svg class="h-8 w-8 text-primary"><use href="#icon-chef-hat"/></svg>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Enkelt å bruke</h3>
+        <p class="text-sm text-muted-foreground">Intuitivt grensesnitt for rask tilgang til alle dine oppskrifter</p>
+      </div>
+      <div class="text-center border border-border/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-xl bg-card p-8">
+        <div class="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
+          <svg class="h-8 w-8 text-primary"><use href="#icon-users"/></svg>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">For hele familien</h3>
+        <p class="text-sm text-muted-foreground">Samle familieoppskrifter på ett sted for alle generasjoner</p>
+      </div>
+      <div class="text-center border border-border/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 rounded-xl bg-card p-8">
+        <div class="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
+          <svg class="h-8 w-8 text-primary"><use href="#icon-heart"/></svg>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Laget med kjærlighet</h3>
+        <p class="text-sm text-muted-foreground">Et personlig prosjekt for å bevare mattradisjoner</p>
+      </div>
+    </div>
+
+    <div class="text-center py-12 px-6 rounded-2xl bg-card border border-border/50">
+      <h2 class="text-2xl font-bold text-foreground mb-4">Klar til å utforske?</h2>
+      <p class="text-muted-foreground mb-6 max-w-md mx-auto">Utforsk min samling av oppskrifter og finn din neste favorittrett.</p>
+      <a href="/recipes" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+        Se alle oppskrifter
+        <svg class="h-5 w-5"><use href="#icon-arrow-right"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

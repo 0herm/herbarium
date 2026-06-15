@@ -2,11 +2,21 @@ services:
   herbarium:
     container_name: herbarium
     build:
-      context: ./frontend
+      context: .
+      dockerfile: dockerfile
     restart: always
-    ports:
-      - "3000:3000"
     env_file:
       - .env
 
-volumes: {}
+  varnish:
+    image: varnish
+    container_name: herbarium-varnish
+    restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./default.vcl:/etc/varnish/default.vcl:ro
+    environment:
+      VARNISH_SIZE: 256m
+    depends_on:
+      - herbarium

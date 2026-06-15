@@ -1,17 +1,5 @@
-# dependencies
-node_modules
-
-# next.js
-*/.next
+# rust
+target/
 
 # env files
 .env*
-
-# typescript
-next-env.d.ts
-
-# text
-/public/text.json
-
-# backup
-/db/backup*.sql

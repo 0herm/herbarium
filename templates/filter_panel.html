@@ -1,0 +1,101 @@
+<form action="/recipes" method="get" class="flex flex-col gap-5">
+
+  <div>
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">Søk</h2>
+    <div class="relative">
+      <input type="search" name="q" value="{{ search }}"
+        placeholder="Søk oppskrifter..." aria-label="Søk oppskrifter"
+        class="w-full h-10 pl-3 pr-9 text-sm rounded-lg bg-muted border border-border/60 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-transparent transition-all placeholder:text-muted-foreground/60">
+      <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 pointer-events-none">
+        <svg class="h-3.5 w-3.5"><use href="#icon-search"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="h-px bg-border/50"></div>
+
+  <div>
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">Kategori</h2>
+    <div class="flex flex-wrap gap-1.5">
+      <label class="cursor-pointer">
+        <input type="radio" name="category" value="" {% if filter_category.is_empty() %}checked{% endif %} class="sr-only peer">
+        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border border-border/60 bg-muted/60 text-muted-foreground peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:border-primary hover:border-primary/40 hover:text-foreground transition-all select-none">Alle</span>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="category" value="dinner" {% if filter_category == "dinner" %}checked{% endif %} class="sr-only peer">
+        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border border-border/60 bg-muted/60 text-muted-foreground peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:border-primary hover:border-primary/40 hover:text-foreground transition-all select-none">Middag</span>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="category" value="baking" {% if filter_category == "baking" %}checked{% endif %} class="sr-only peer">
+        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border border-border/60 bg-muted/60 text-muted-foreground peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:border-primary hover:border-primary/40 hover:text-foreground transition-all select-none">Bakst</span>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="category" value="drink" {% if filter_category == "drink" %}checked{% endif %} class="sr-only peer">
+        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border border-border/60 bg-muted/60 text-muted-foreground peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:border-primary hover:border-primary/40 hover:text-foreground transition-all select-none">Drikke</span>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="category" value="dessert" {% if filter_category == "dessert" %}checked{% endif %} class="sr-only peer">
+        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border border-border/60 bg-muted/60 text-muted-foreground peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:border-primary hover:border-primary/40 hover:text-foreground transition-all select-none">Dessert</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="h-px bg-border/50"></div>
+
+  <div>
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">Favoritter</h2>
+    <label class="block cursor-pointer group">
+      <input type="checkbox" name="favorite" value="true" {% if filter_favorite %}checked{% endif %} class="sr-only">
+      <div class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-border/60 bg-muted/40 text-muted-foreground group-has-[:checked]:border-primary group-has-[:checked]:bg-primary/8 group-has-[:checked]:text-primary hover:border-primary/40 hover:text-foreground transition-all">
+        <svg class="h-4 w-4 shrink-0 group-has-[:checked]:fill-current transition-all"><use href="#icon-heart"/></svg>
+        <span class="text-sm font-medium">Vis kun favoritter</span>
+      </div>
+    </label>
+  </div>
+
+  <div class="h-px bg-border/50"></div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2.5">
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total tid</h2>
+      <div class="duration-label text-xs font-medium text-primary"></div>
+    </div>
+    <input type="range" name="duration"
+      min="15" max="255" step="15" value="{{ filter_duration }}"
+      class="filter-range w-full cursor-pointer"
+      oninput="updateDurationLabel(this)">
+  </div>
+
+  <button type="submit"
+    class="w-full py-2.5 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 active:scale-[0.98] transition-all">
+    Filtrer
+  </button>
+</form>
+
+<script>
+  (function() {
+    function updateDurationLabel(slider) {
+      var label = slider.closest('div').querySelector('.duration-label') || slider.previousElementSibling;
+      var panelLabels = document.querySelectorAll('.duration-label');
+      var v = parseInt(slider.value);
+      var text;
+      if (v >= 255) {
+        text = 'Ingen grense';
+      } else {
+        var h = Math.floor(v / 60);
+        var m = v % 60;
+        var parts = [];
+        if (h > 0) parts.push(h + 't');
+        if (m > 0) parts.push(m + 'min');
+        text = 'Maks ' + parts.join(' ');
+      }
+      var pct = ((v - parseInt(slider.min)) / (parseInt(slider.max) - parseInt(slider.min))) * 100;
+      slider.style.setProperty('--range-pct', pct + '%');
+      panelLabels.forEach(function(el) { el.textContent = text; });
+    }
+    window.updateDurationLabel = updateDurationLabel;
+    document.querySelectorAll('input[name="duration"]').forEach(function(el) {
+      updateDurationLabel(el);
+    });
+  })();
+</script>

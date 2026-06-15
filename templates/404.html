@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Ikke funnet | Herbivore{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-var(--h-navbar))] flex flex-col items-center justify-center px-4 text-center">
+  <div class="p-6 rounded-2xl bg-primary/10 mb-6">
+    <svg class="h-16 w-16 text-primary"><use href="#icon-leaf"/></svg>
+  </div>
+  <h1 class="text-4xl font-bold text-foreground mb-4">404</h1>
+  <p class="text-lg text-muted-foreground mb-8 max-w-md">Denne siden finnes ikke.</p>
+  <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+    Gå til forsiden
+    <svg class="h-5 w-5"><use href="#icon-arrow-right"/></svg>
+  </a>
+</div>
+{% endblock %}

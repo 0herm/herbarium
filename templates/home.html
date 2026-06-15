@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% import "macros/cards.html" as cards %}
+
+{% block title %}Herbivore{% endblock %}
+
+{% block content %}
+<div class="w-full flex flex-col">
+
+  <section class="relative w-full overflow-hidden py-10 sm:py-16 lg:min-h-[calc(100vh-var(--h-navbar))] lg:py-0">
+    <div class="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-accent/20 dark:from-primary/10 dark:via-background dark:to-accent/10"></div>
+    <div class="absolute top-20 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-60 dark:opacity-30"></div>
+    <div class="absolute bottom-20 left-0 w-80 h-80 bg-accent/30 rounded-full blur-3xl opacity-50 dark:opacity-20"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-20 lg:min-h-[calc(100vh-var(--h-navbar))] flex items-center">
+      <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
+        <div class="flex flex-col gap-5 sm:gap-6 text-center lg:text-left order-2 lg:order-1">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium w-fit mx-auto lg:mx-0">
+            <svg class="h-4 w-4"><use href="#icon-sparkles"/></svg>
+            <span>Den digitale kokebok</span>
+          </div>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">Plantebasert Oppskrifter</h1>
+          <p class="text-base sm:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">Oppdag deilige og enkle plantebaserte oppskrifter</p>
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start pt-2 sm:pt-4">
+            <a href="/recipes" class="inline-flex items-center justify-center gap-2 px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base font-medium rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all">
+              Utforsk oppskrifter
+              <svg class="h-4 w-4 sm:h-5 sm:w-5"><use href="#icon-arrow-right"/></svg>
+            </a>
+            <a href="/recipes?favorite=true" class="inline-flex items-center justify-center gap-2 px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base font-medium rounded-xl border-2 border-border hover:bg-accent transition-colors">
+              Favorittoppskrifter
+            </a>
+          </div>
+        </div>
+
+        <div class="relative order-1 lg:order-2">
+          <div class="relative w-full max-w-sm sm:max-w-lg mx-auto">
+            <div class="absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 rounded-3xl blur-2xl"></div>
+            <div class="flex items-center relative h-52 sm:h-auto sm:aspect-square bg-card/50 backdrop-blur-sm rounded-3xl border border-border/50 p-4 sm:p-6 shadow-2xl overflow-hidden">
+              <img src="/images/heroSection.webp" alt="Illustrasjon av plantebasert mat"
+                class="object-contain w-full h-auto"
+                onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if total_recipes > 0 %}
+  <section class="w-full py-10 sm:py-16 bg-card/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+        <div class="flex flex-col items-center p-4 sm:p-6 lg:p-8 rounded-2xl bg-background border border-border shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="p-2 sm:p-3 rounded-xl bg-primary/10 mb-3 sm:mb-4"><svg class="h-5 w-5 sm:h-8 sm:w-8 text-primary"><use href="#icon-book-open"/></svg></div>
+          <span class="text-xl sm:text-4xl lg:text-5xl font-bold text-primary">{{ total_recipes }}</span>
+          <span class="text-muted-foreground font-medium mt-1 sm:mt-2 text-xs sm:text-base">Oppskrifter</span>
+        </div>
+        <div class="flex flex-col items-center p-4 sm:p-6 lg:p-8 rounded-2xl bg-background border border-border shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="p-2 sm:p-3 rounded-xl bg-primary/10 mb-3 sm:mb-4"><svg class="h-5 w-5 sm:h-8 sm:w-8 text-primary"><use href="#icon-chef-hat"/></svg></div>
+          <span class="text-xl sm:text-4xl lg:text-5xl font-bold text-primary">{{ total_categories }}</span>
+          <span class="text-muted-foreground font-medium mt-1 sm:mt-2 text-xs sm:text-base">Kategorier</span>
+        </div>
+        {% if first_year > 0 %}
+        <div class="flex flex-col items-center p-4 sm:p-6 lg:p-8 rounded-2xl bg-background border border-border shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="p-2 sm:p-3 rounded-xl bg-primary/10 mb-3 sm:mb-4"><svg class="h-5 w-5 sm:h-8 sm:w-8 text-primary"><use href="#icon-trending-up"/></svg></div>
+          <span class="text-xs text-muted-foreground hidden sm:block">Siden</span>
+          <span class="text-xl sm:text-4xl lg:text-5xl font-bold text-primary">{{ first_year }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if !recent.is_empty() %}
+  <section class="w-full py-10 sm:py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-row items-center justify-between gap-4 mb-6 sm:mb-12">
+        <div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">Nylige oppskrifter</h2>
+          <p class="hidden sm:block text-lg text-muted-foreground mt-2">De siste oppskriftene jeg har lagt til i samlingen min, perfekt for å prøve noe nytt</p>
+        </div>
+        <a href="/recipes" class="group inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg border border-border font-medium text-sm hover:bg-accent transition-colors whitespace-nowrap shrink-0">
+          Se alle
+          <svg class="h-4 w-4 group-hover:translate-x-1 transition-transform"><use href="#icon-arrow-right"/></svg>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+        {% for recipe in recent %}
+        {% call cards::recipe_card_recent(recipe) %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="w-full py-10 sm:py-16 lg:py-24 bg-muted/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8 sm:mb-12">
+        <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">Sorter etter kategori</h3>
+        <p class="hidden sm:block text-lg text-muted-foreground mt-3 max-w-2xl mx-auto">Utforsk oppskrifter basert på dine favorittmatkategorier</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 sm:gap-6 max-w-4xl mx-auto">
+        <a href="/recipes?category=dinner" class="group">
+          <div class="h-full hover:shadow-lg hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 bg-background border border-border rounded-xl">
+            <div class="p-4 sm:p-6 lg:p-8 flex flex-col items-center text-center">
+              <div class="text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300">🍛</div>
+              <h4 class="font-semibold text-sm sm:text-base text-card-foreground capitalize group-hover:text-primary transition-colors">middag</h4>
+            </div>
+          </div>
+        </a>
+        <a href="/recipes?category=baking" class="group">
+          <div class="h-full hover:shadow-lg hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 bg-background border border-border rounded-xl">
+            <div class="p-4 sm:p-6 lg:p-8 flex flex-col items-center text-center">
+              <div class="text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300">🍞</div>
+              <h4 class="font-semibold text-sm sm:text-base text-card-foreground capitalize group-hover:text-primary transition-colors">bakst</h4>
+            </div>
+          </div>
+        </a>
+        <a href="/recipes?category=drink" class="group">
+          <div class="h-full hover:shadow-lg hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 bg-background border border-border rounded-xl">
+            <div class="p-4 sm:p-6 lg:p-8 flex flex-col items-center text-center">
+              <div class="text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300">🥤</div>
+              <h4 class="font-semibold text-sm sm:text-base text-card-foreground capitalize group-hover:text-primary transition-colors">drikke</h4>
+            </div>
+          </div>
+        </a>
+        <a href="/recipes?category=dessert" class="group">
+          <div class="h-full hover:shadow-lg hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 bg-background border border-border rounded-xl">
+            <div class="p-4 sm:p-6 lg:p-8 flex flex-col items-center text-center">
+              <div class="text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300">🍪</div>
+              <h4 class="font-semibold text-sm sm:text-base text-card-foreground capitalize group-hover:text-primary transition-colors">dessert</h4>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="text-center mt-8 sm:mt-10">
+        <a href="/recipes" class="group inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg border border-border font-medium text-sm sm:text-base hover:bg-accent transition-colors">
+          og mer...
+          <svg class="h-4 w-4 group-hover:translate-x-1 transition-transform"><use href="#icon-arrow-right"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

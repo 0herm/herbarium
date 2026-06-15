@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="no" class="dark noscroll">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="En plantebasert oppskriftsbok">
+  <title>{% block title %}Herbivore{% endblock %}</title>
+  <script>!function(){var m=document.cookie.match(/(?:^|;\s*)theme=([^;]+)/),t=m&&'light'===m[1]?'light':'dark';document.documentElement.classList.remove('dark','light');document.documentElement.classList.add(t)}()</script>
+  <link rel="preload" href="/fonts/InterFont.ttf" as="font" type="font/truetype" crossorigin>
+  <link rel="icon" href="/images/logo/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="/images/logo/logo_192.png" type="image/png" sizes="192x192">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      src: url('/fonts/InterFont.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full bg-background text-foreground flex flex-col font-[Inter] antialiased leading-relaxed overflow-x-hidden">
+  {% include "icons.html" %}
+
+  <nav class="fixed top-0 left-0 right-0 w-full bg-background/80 border-b border-border/50 backdrop-blur-xl z-50 print:hidden shadow-sm">
+    <div class="flex flex-row justify-between items-center w-full h-(--h-navbar) max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <a href="/" class="flex items-center gap-2 group">
+        <div class="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-200">
+          <svg class="h-5 w-5 sm:h-6 sm:w-6 text-primary"><use href="#icon-leaf"/></svg>
+        </div>
+        <span class="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200">Herbivore</span>
+      </a>
+
+      <nav class="hidden sm:flex absolute left-1/2 -translate-x-1/2 gap-1">
+        <div class="relative group">
+          <button class="flex items-center gap-1 h-10 px-4 rounded-lg font-medium text-sm bg-transparent hover:bg-accent/60 transition-colors">
+            Oppskrifter
+            <svg class="h-4 w-4 opacity-60"><use href="#icon-chevron-right"/></svg>
+          </button>
+          <div class="absolute top-full left-0 mt-1 w-48 bg-card border border-border rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 p-2">
+            <a href="/recipes" class="flex items-center justify-center rounded-lg p-3 text-foreground font-medium hover:bg-accent transition-colors">Alle</a>
+            <div class="h-px bg-border my-1"></div>
+            <a href="/recipes?category=dinner" class="flex items-center justify-center rounded-lg p-3 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors capitalize">middag</a>
+            <a href="/recipes?category=baking" class="flex items-center justify-center rounded-lg p-3 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors capitalize">bakst</a>
+            <a href="/recipes?category=drink" class="flex items-center justify-center rounded-lg p-3 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors capitalize">drikke</a>
+            <a href="/recipes?category=dessert" class="flex items-center justify-center rounded-lg p-3 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors capitalize">dessert</a>
+          </div>
+        </div>
+        <a href="/about" class="flex items-center h-10 px-4 rounded-lg font-medium text-sm text-foreground/80 hover:text-foreground hover:bg-accent/60 transition-colors">Om meg</a>
+      </nav>
+
+      <div class="flex flex-row items-center gap-1 sm:gap-2">
+        <form action="/recipes" method="get" class="hidden sm:flex items-center relative">
+          <input type="search" name="q" placeholder="Søk" aria-label="Søk oppskrifter"
+            class="w-40 h-9 pl-3 pr-9 text-sm rounded-lg bg-muted/50 border border-border/50 focus:outline-none focus:ring-2 focus:ring-ring/50 focus:w-56 transition-all">
+          <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+            <svg class="h-4 w-4"><use href="#icon-search"/></svg>
+          </button>
+        </form>
+
+        <button id="theme-btn" onclick="toggleTheme()"
+          class="hidden sm:flex items-center justify-center h-10 w-10 rounded-lg hover:bg-accent/60 transition-colors cursor-pointer"
+          aria-label="Bytt tema">
+          <svg class="h-5 w-5 theme-icon-moon text-blue-400"><use href="#icon-moon"/></svg>
+          <svg class="h-5 w-5 theme-icon-sun text-amber-500 hidden"><use href="#icon-sun"/></svg>
+        </button>
+
+        <button id="menu-btn" onclick="openMenu()" aria-controls="mobile-menu" aria-expanded="false"
+          class="flex sm:hidden items-center justify-center h-9 w-9 rounded-xl bg-muted/60 border border-border/60 hover:bg-accent active:scale-95 transition-all cursor-pointer"
+          aria-label="Åpne meny">
+          <svg class="h-4 w-4"><use href="#icon-menu"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="menu-backdrop" onclick="closeMenu()" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 hidden"></div>
+  <div id="mobile-menu" class="fixed top-0 right-0 h-screen w-4/5 max-w-xs bg-card z-50 shadow-2xl translate-x-full transition-transform duration-300 ease-in-out print:hidden flex flex-col">
+
+    <div class="flex items-center justify-between px-4 py-3 border-b border-border/60">
+      <a href="/" onclick="closeMenu()" class="flex items-center gap-2 group">
+        <div class="p-1.5 rounded-lg bg-primary/10">
+          <svg class="h-4 w-4 text-primary"><use href="#icon-leaf"/></svg>
+        </div>
+        <span class="font-semibold text-foreground">Herbivore</span>
+      </a>
+      <button onclick="closeMenu()" class="p-2 rounded-lg hover:bg-accent active:scale-95 transition-all cursor-pointer" aria-label="Lukk meny">
+        <svg class="h-4 w-4"><use href="#icon-x"/></svg>
+      </button>
+    </div>
+
+    <div class="px-4 py-3 border-b border-border/40">
+      <form action="/recipes" method="get" onsubmit="closeMenu()">
+        <div class="relative">
+          <input type="search" name="q" placeholder="Søk oppskrifter..." aria-label="Søk oppskrifter"
+            class="w-full h-9 pl-3 pr-8 text-sm rounded-lg bg-muted border border-border/60 focus:outline-none focus:ring-2 focus:ring-ring/50 placeholder:text-muted-foreground/60">
+          <button type="submit" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground">
+            <svg class="h-3.5 w-3.5"><use href="#icon-search"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-3 pb-2">Navigasjon</p>
+
+      <a href="/recipes" onclick="closeMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-foreground font-medium hover:bg-accent active:bg-accent/80 transition-colors">
+        <div class="p-1.5 rounded-lg bg-primary/10 shrink-0"><svg class="h-3.5 w-3.5 text-primary"><use href="#icon-book-open"/></svg></div>
+        Alle oppskrifter
+      </a>
+      <a href="/recipes?favorite=true" onclick="closeMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-foreground/80 hover:text-foreground hover:bg-accent active:bg-accent/80 transition-colors">
+        <div class="p-1.5 rounded-lg bg-yellow-500/10 shrink-0"><svg class="h-3.5 w-3.5 text-yellow-500 fill-current"><use href="#icon-star"/></svg></div>
+        Favoritter
+      </a>
+      <a href="/about" onclick="closeMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-foreground/80 hover:text-foreground hover:bg-accent active:bg-accent/80 transition-colors">
+        <div class="p-1.5 rounded-lg bg-muted shrink-0"><svg class="h-3.5 w-3.5 text-muted-foreground"><use href="#icon-leaf"/></svg></div>
+        Om meg
+      </a>
+
+      <div class="h-px bg-border/50 my-3 mx-1"></div>
+
+      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-3 pb-2">Kategorier</p>
+
+      <a href="/recipes?category=dinner" onclick="closeMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-foreground/80 hover:text-foreground hover:bg-accent active:bg-accent/80 transition-colors">
+        <span class="text-base w-7 text-center shrink-0">🍛</span>
+        <span>Middag</span>
+      </a>
+      <a href="/recipes?category=baking" onclick="closeMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-foreground/80 hover:text-foreground hover:bg-accent active:bg-accent/80 transition-colors">
+        <span class="text-base w-7 text-center shrink-0">🍞</span>
+        <span>Bakst</span>
+      </a>
+      <a href="/recipes?category=drink" onclick="closeMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-foreground/80 hover:text-foreground hover:bg-accent active:bg-accent/80 transition-colors">
+        <span class="text-base w-7 text-center shrink-0">🥤</span>
+        <span>Drikke</span>
+      </a>
+      <a href="/recipes?category=dessert" onclick="closeMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-foreground/80 hover:text-foreground hover:bg-accent active:bg-accent/80 transition-colors">
+        <span class="text-base w-7 text-center shrink-0">🍪</span>
+        <span>Dessert</span>
+      </a>
+    </div>
+
+    <div class="border-t border-border/50 px-4 py-3">
+      <button onclick="toggleTheme()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-accent active:bg-accent/80 transition-colors cursor-pointer text-sm text-foreground/80">
+        <svg class="h-4 w-4 theme-icon-moon text-blue-400"><use href="#icon-moon"/></svg>
+        <svg class="h-4 w-4 theme-icon-sun text-amber-500 hidden"><use href="#icon-sun"/></svg>
+        <span>Bytt tema</span>
+      </button>
+    </div>
+
+  </div>
+
+  <main class="flex-1 w-full pt-(--h-navbar) print:pt-0">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="w-full border-t border-border/50 bg-card/50 backdrop-blur-sm print:hidden">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="flex flex-col items-center sm:items-start gap-3">
+          <a href="/" class="flex items-center gap-2 group">
+            <div class="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors duration-200">
+              <svg class="h-5 w-5 text-primary"><use href="#icon-leaf"/></svg>
+            </div>
+            <span class="text-lg font-semibold text-foreground">Herbivore</span>
+          </a>
+          <p class="text-sm text-muted-foreground">Opphavsrett © Herbivore</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+          <a href="/recipes" class="text-muted-foreground hover:text-foreground transition-colors">Oppskrifter</a>
+          <a href="/about" class="text-muted-foreground hover:text-foreground transition-colors">Om meg</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.contains('dark');
+      const next = isDark ? 'light' : 'dark';
+      html.classList.remove('dark', 'light');
+      html.classList.add(next);
+      document.cookie = 'theme=' + next + '; path=/; max-age=31536000; samesite=lax';
+      document.querySelectorAll('.theme-icon-moon').forEach(el => el.classList.toggle('hidden', next === 'light'));
+      document.querySelectorAll('.theme-icon-sun').forEach(el => el.classList.toggle('hidden', next === 'dark'));
+    }
+    function openMenu() {
+      document.getElementById('mobile-menu').classList.remove('translate-x-full');
+      document.getElementById('menu-backdrop').classList.remove('hidden');
+      document.getElementById('menu-btn').setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      document.getElementById('mobile-menu').classList.add('translate-x-full');
+      document.getElementById('menu-backdrop').classList.add('hidden');
+      document.getElementById('menu-btn').setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    (function() {
+      const isDark = document.documentElement.classList.contains('dark');
+      document.querySelectorAll('.theme-icon-moon').forEach(el => el.classList.toggle('hidden', !isDark));
+      document.querySelectorAll('.theme-icon-sun').forEach(el => el.classList.toggle('hidden', isDark));
+    })();
+  </script>
+</body>
+</html>

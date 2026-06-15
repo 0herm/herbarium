@@ -1,51 +1,43 @@
 # Herbarium
-A self-hosted recipe website, where you can share your recipes. Ease of use with tools to edit and add recipes.
+A self-hosted recipe website. Recipes are written in [Cooklang](https://cooklang.org/) and served as a fast, read-only site.
 
-**Build With**  
-NextJS, TypeScript, React, Tailwind, PostgreSQL and better-auth.
+**Built With**  
+Rust, Axum, Askama, Tailwind, Varnish
 
 ### ✨ Features
-- Overview for new recipes
+- Browse and search recipes
 - Sort by categories
-- Search for recipes
-- Add and edit recipes
-- Backup and restore recipes
-- Authentication and authorization
+- Recipe detail pages with ingredients and instructions
+- Automatic recipe sync from a private GitHub repo
+- Light/dark theme toggle
+- Varnish caching layer
 
 ### ⚙️ Environment Variables
 
-| Name                      | Notes                                                                                |
-|---------------------------|--------------------------------------------------------------------------------------|
-| POSTGRES_HOST_PROD        | Default to `herbarium_database`, the host for the postgres database for production    |
-| POSTGRES_HOST_DEV         | Default to `herbarium_database`, the host for the postgres database for development   |
-| POSTGRES_PORT             | Default to `5432`, the port for the postgres database                                |
-| POSTGRES_USER             | Default to `herbarium`, the username for the postgres database                           |
-| POSTGRES_PASSWORD         | Password for the postgres database user                                              |
-| POSTGRES_DB               | Default to `herbarium`, the name for the postgres database                            |
-
-| Name                      | Notes                                                                                |
-|---------------------------|--------------------------------------------------------------------------------------|
-| AUTH_SECRET               | The secret for the auth service                                                      |
-| AUTH_URL                  | URL for the auth service, default `http://localhost:8080`                            |
-| AUTH_TELEMETRY            | To enable telemetry for auth, default `false`                                        |
-| AUTH_EMAIL                | Email for authentication                                                             |
-| AUTH_PASSWORD             | Password for authentication                                                          |
-| AUTH_NAME                 | Name for authentication                                                              |
+| Name                    | Default                | Notes                                                                             |
+|-------------------------|------------------------|-----------------------------------------------------------------------------------|
+| `GITHUB_DEPLOY_KEY`     | —                      | Base64-encoded SSH deploy key for cloning/pulling the recipes repo (required)     |
+| `RECIPES_DIR`           | `/herbarium-recipes`   | Path where the recipes repo is cloned                                             |
+| `STATIC_DIR`            | `static`               | Path to static assets directory                                                   |
+| `PORT`                  | `3001`                 | Port the server listens on (Varnish listens on 3000 externally)                   |
+| `RECIPES_PULL_INTERVAL` | `86400`                | Seconds between `git pull` refreshes of the recipes repo                          |
+| `RUST_LOG`              | `herbarium=info`       | Log filter (uses `tracing` env-filter syntax)                                     |
 
 ### 🐳 Install with Docker
-To start the containers run:
+Add your deploy key and start the containers:
 
 ~~~
-docker-compose up --build -d
+GITHUB_DEPLOY_KEY=$(base64 -w0 ~/.ssh/your_deploy_key) docker-compose up --build -d
 ~~~
 
-For the auth credentials, run `npm run seed`
+On first start the entrypoint clones the recipes repo into `RECIPES_DIR`, then pulls every `RECIPES_PULL_INTERVAL` seconds in the background. The site will be available at [http://localhost:3000](http://localhost:3000).
 
-Then go to the cashed site: [http://localhost:8080](http://localhost:8080) or your configured domain.
+### 📖 Recipes
+Recipes are stored as `.cook` files in a private GitHub repo. The container clones it via SSH using `GITHUB_DEPLOY_KEY` and re-pulls on the interval defined by `RECIPES_PULL_INTERVAL`. See the [Cooklang spec](https://cooklang.org/docs/spec/) for the file format.
+
+Cover images and recipe-specific images are read from a subdirectory matching the recipe's filename (without extension).
 
 ### ℹ️ Information
-Change `/public/robots.txt` based on your use case
+Change `static/robots.txt` based on your use case.
 
-To change the text for the website, rename the `textDemo.json` to `text.json` in the `/public` directory, then edit the `text.json` file to your liking.
-
-For the hero section image, replace the `/public/images/heroSection.webp` file with your own image.
+For the hero section image, replace `static/images/heroSection.webp` with your own image.

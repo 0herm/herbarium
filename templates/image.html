@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Image Converter | Herbivore{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100vh-var(--h-navbar))] bg-linear-to-b from-background to-muted/10">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+
+    <nav class="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+      <a href="/" class="hover:text-foreground transition-colors">Hjem</a>
+      <svg class="h-4 w-4"><use href="#icon-chevron-right"/></svg>
+      <span class="text-foreground font-medium">Image</span>
+    </nav>
+
+    <div class="flex items-center gap-3 mb-8">
+      <div class="p-3 rounded-xl bg-primary/10">
+        <svg class="h-6 w-6 text-primary"><use href="#icon-image"/></svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-foreground">Image Converter</h1>
+        <p class="text-sm text-muted-foreground">Convert to WebP · Max 1920px · Quality 82</p>
+      </div>
+    </div>
+
+    <div id="img-upload"
+      class="border-2 border-dashed rounded-2xl p-16 text-center cursor-pointer transition-colors border-border hover:border-primary/50 hover:bg-accent/30"
+      ondragover="event.preventDefault(); this.classList.add('!border-primary','bg-primary/5')"
+      ondragleave="this.classList.remove('!border-primary','bg-primary/5')"
+      ondrop="event.preventDefault(); this.classList.remove('!border-primary','bg-primary/5'); imgHandleFile(event.dataTransfer.files[0])"
+      onclick="document.getElementById('img-file-in').click()">
+      <svg class="h-10 w-10 text-muted-foreground mx-auto mb-4"><use href="#icon-upload"/></svg>
+      <p class="text-base font-medium mb-1">Click or drag to add photo</p>
+      <p class="text-sm text-muted-foreground">JPG · PNG · WebP · GIF</p>
+      <input id="img-file-in" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden"
+        onchange="imgHandleFile(this.files[0])">
+    </div>
+
+    <div id="img-editor" class="hidden space-y-5">
+      <canvas id="img-main-canvas" width="960" height="540"
+        class="w-full rounded-2xl bg-muted/30 shadow-lg select-none cursor-grab"
+        onmousedown="imgPanStart(event.clientX, event.clientY)"
+        onmousemove="imgPanMove(event.clientX, event.clientY)"
+        onmouseup="imgPanEnd()"
+        onmouseleave="imgPanEnd()"
+        ontouchstart="imgPanStart(event.touches[0].clientX, event.touches[0].clientY)"
+        ontouchmove="event.preventDefault(); imgPanMove(event.touches[0].clientX, event.touches[0].clientY)"
+        ontouchend="imgPanEnd()">
+      </canvas>
+
+      <div class="bg-card rounded-xl border border-border p-5 space-y-4">
+        <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Crop &amp; Focus</p>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-muted-foreground w-10">Zoom</span>
+          <input id="img-zoom-in" type="range" min="1" max="3" step="0.05" value="1"
+            oninput="imgSetZoom(parseFloat(this.value))"
+            class="flex-1 accent-primary">
+          <span id="img-zlabel" class="text-sm font-medium w-10 text-right">1.0×</span>
+          <button onclick="imgResetView()"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm hover:bg-accent transition-colors">
+            <svg class="h-3.5 w-3.5"><use href="#icon-refresh"/></svg>
+            Reset
+          </button>
+        </div>
+        <p class="text-xs text-muted-foreground">Drag to pan · zoom slider to crop</p>
+      </div>
+
+      <div class="bg-card rounded-xl border border-border p-5 space-y-5">
+        <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Preview</p>
+
+        <div class="space-y-2">
+          <p class="text-xs text-muted-foreground">Recipe page</p>
+          <canvas id="img-hero-canvas" width="960" height="405" class="w-full rounded-xl bg-muted/30"></canvas>
+        </div>
+
+        <div class="space-y-2">
+          <p class="text-xs text-muted-foreground">Card</p>
+          <div class="w-48 overflow-hidden bg-card rounded-xl border border-border/50 shadow-sm">
+            <div class="relative aspect-video overflow-hidden bg-muted/30">
+              <canvas id="img-card-canvas" width="320" height="180" class="w-full h-full block object-cover"></canvas>
+              <div class="absolute inset-0 bg-linear-to-t from-black/35 via-black/5 to-transparent pointer-events-none"></div>
+            </div>
+            <div class="px-4 py-3 space-y-2">
+              <div class="h-3.5 w-3/4 rounded-full bg-foreground/10"></div>
+              <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1.5">
+                  <svg class="h-3.5 w-3.5 text-muted-foreground/40"><use href="#icon-shapes"/></svg>
+                  <div class="h-2.5 w-10 rounded-full bg-muted-foreground/20"></div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <svg class="h-3.5 w-3.5 text-muted-foreground/40"><use href="#icon-clock"/></svg>
+                  <div class="h-2.5 w-8 rounded-full bg-muted-foreground/20"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button id="img-dl-btn" onclick="imgDownload()"
+          class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+          <svg class="h-4 w-4"><use href="#icon-download"/></svg>
+          <span id="img-dl-label">Download as WebP</span>
+        </button>
+        <button onclick="imgClear()"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border hover:bg-accent transition-colors font-medium">
+          <svg class="h-4 w-4"><use href="#icon-x"/></svg>
+          Remove
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var imgEl = null, imageSrc = null, filename = 'image';
+  var focalX = 50, focalY = 50, zoom = 1;
+  var panState = null, lastScale = 1;
+
+  window.imgSetZoom = function(v) {
+    zoom = Math.max(1, Math.min(3, v));
+    document.getElementById('img-zoom-in').value = zoom;
+    document.getElementById('img-zlabel').textContent = zoom.toFixed(1) + '×';
+    renderAll();
+  };
+
+  function getCrop(imgW, imgH) {
+    var cropW = imgW / zoom, cropH = imgH / zoom;
+    var cropX = Math.max(0, Math.min(imgW - cropW, (focalX / 100) * imgW - cropW / 2));
+    var cropY = Math.max(0, Math.min(imgH - cropH, (focalY / 100) * imgH - cropH / 2));
+    return { cropW: cropW, cropH: cropH, cropX: cropX, cropY: cropY };
+  }
+
+  function renderContain(canvas, img, cropX, cropY, cropW, cropH) {
+    var ctx = canvas.getContext('2d');
+    var cW = canvas.width, cH = canvas.height;
+    var scale = Math.min(cW / cropW, cH / cropH);
+    var drawW = cropW * scale, drawH = cropH * scale;
+    ctx.clearRect(0, 0, cW, cH);
+    ctx.drawImage(img, cropX, cropY, cropW, cropH, (cW - drawW) / 2, (cH - drawH) / 2, drawW, drawH);
+    return scale;
+  }
+
+  function renderCover(canvas, img, cropX, cropY, cropW, cropH) {
+    var ctx = canvas.getContext('2d');
+    var cW = canvas.width, cH = canvas.height;
+    var cropAspect = cropW / cropH, cardAspect = cW / cH;
+    var srcX = cropX, srcY = cropY, srcW = cropW, srcH = cropH;
+    if (cropAspect > cardAspect) {
+      srcW = cropH * cardAspect;
+      srcX = cropX + (cropW - srcW) / 2;
+    } else {
+      srcH = cropW / cardAspect;
+      srcY = cropY + (cropH - srcH) / 2;
+    }
+    ctx.clearRect(0, 0, cW, cH);
+    ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, cW, cH);
+  }
+
+  function renderAll() {
+    if (!imgEl) return;
+    var c = getCrop(imgEl.naturalWidth, imgEl.naturalHeight);
+    lastScale = renderContain(document.getElementById('img-main-canvas'), imgEl, c.cropX, c.cropY, c.cropW, c.cropH);
+    renderContain(document.getElementById('img-hero-canvas'), imgEl, c.cropX, c.cropY, c.cropW, c.cropH);
+    renderCover(document.getElementById('img-card-canvas'), imgEl, c.cropX, c.cropY, c.cropW, c.cropH);
+  }
+
+  window.imgHandleFile = function(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    if (imageSrc) URL.revokeObjectURL(imageSrc);
+    focalX = 50; focalY = 50;
+    imgSetZoom(1);
+    filename = file.name.replace(/\.[^.]+$/, '');
+    imageSrc = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      imgEl = img;
+      document.getElementById('img-upload').classList.add('hidden');
+      document.getElementById('img-editor').classList.remove('hidden');
+      renderAll();
+    };
+    img.src = imageSrc;
+  };
+
+  window.imgPanStart = function(cx, cy) {
+    panState = { startX: cx, startY: cy, startFX: focalX, startFY: focalY };
+    document.getElementById('img-main-canvas').style.cursor = 'grabbing';
+  };
+
+  window.imgPanMove = function(cx, cy) {
+    if (!panState || !imgEl) return;
+    var canvas = document.getElementById('img-main-canvas');
+    var rect = canvas.getBoundingClientRect();
+    var dx = (cx - panState.startX) * 960 / rect.width;
+    var dy = (cy - panState.startY) * 540 / rect.height;
+    focalX = Math.max(0, Math.min(100, panState.startFX - (dx / lastScale / imgEl.naturalWidth) * 100));
+    focalY = Math.max(0, Math.min(100, panState.startFY - (dy / lastScale / imgEl.naturalHeight) * 100));
+    renderAll();
+  };
+
+  window.imgPanEnd = function() {
+    panState = null;
+    document.getElementById('img-main-canvas').style.cursor = 'grab';
+  };
+
+  window.imgResetView = function() {
+    focalX = 50; focalY = 50;
+    imgSetZoom(1);
+  };
+
+  window.imgClear = function() {
+    if (imageSrc) URL.revokeObjectURL(imageSrc);
+    imageSrc = null; imgEl = null;
+    imgResetView();
+    document.getElementById('img-editor').classList.add('hidden');
+    document.getElementById('img-upload').classList.remove('hidden');
+    document.getElementById('img-file-in').value = '';
+  };
+
+  window.imgDownload = function() {
+    if (!imgEl) return;
+    var btn = document.getElementById('img-dl-btn');
+    var lbl = document.getElementById('img-dl-label');
+    btn.disabled = true;
+    lbl.textContent = 'Processing…';
+    var c = getCrop(imgEl.naturalWidth, imgEl.naturalHeight);
+    var scale = Math.min(1, 1920 / Math.max(c.cropW, c.cropH));
+    var offscreen = document.createElement('canvas');
+    offscreen.width  = Math.round(c.cropW * scale);
+    offscreen.height = Math.round(c.cropH * scale);
+    offscreen.getContext('2d').drawImage(imgEl, c.cropX, c.cropY, c.cropW, c.cropH, 0, 0, offscreen.width, offscreen.height);
+    offscreen.toBlob(function(blob) {
+      if (blob) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'cover.webp';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+      btn.disabled = false;
+      lbl.textContent = 'Download as WebP';
+    }, 'image/webp', 0.82);
+  };
+})();
+</script>
+{% endblock %}
