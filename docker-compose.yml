@@ -18,5 +18,9 @@ services:
       - ./default.vcl:/etc/varnish/default.vcl:ro
     environment:
       VARNISH_SIZE: 256m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     depends_on:
       - herbarium

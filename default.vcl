@@ -6,7 +6,6 @@ backend default {
 }
 
 acl purge {
-    "localhost";
     "127.0.0.1";
 }
 
