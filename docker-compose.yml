@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: dockerfile
     restart: always
+    init: true
     env_file:
       - .env
 
